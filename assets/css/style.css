@@ -1,0 +1,11 @@
+html {
+    scroll-behavior: smooth;
+}
+
+body.font-sans {
+    font-family: "Inter", sans-serif;
+}
+
+.font-heading {
+    font-family: "Plus Jakarta Sans", sans-serif;
+}

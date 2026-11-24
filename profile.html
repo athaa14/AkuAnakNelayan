@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="id">
+<head>
+    <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Profil - AkuAnakNelayan</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css"><script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex min-h-screen flex-col bg-slate-50 font-sans text-slate-800">
+    <main class="mx-auto w-full max-w-7xl flex-1 px-4 sm:px-6 lg:px-8">
+        <header class="border-b border-slate-200 bg-amber-50 px-5 py-8 sm:px-8"><p class="text-xs font-bold text-slate-500">Beranda <span class="mx-1">/</span> Profil</p><h1 class="mt-2 font-heading text-3xl font-extrabold text-slate-900">Profil Saya</h1></header>
+        <section class="grid gap-6 py-8 lg:grid-cols-[280px_1fr]">
+            <aside class="h-fit rounded-2xl bg-slate-900 p-6 text-white">
+                <img id="profileImage" class="h-20 w-20 rounded-full border-2 border-white/30 object-cover" alt="">
+                <h2 id="profileName" class="mt-4 font-heading text-xl font-extrabold"></h2><p id="profileEmail" class="mt-1 break-all text-sm text-slate-300"></p>
+                <nav class="mt-6 grid"><a class="border-t border-white/15 py-3 text-sm hover:text-teal-200" href="profile.html">Informasi Profil</a><a class="border-t border-white/15 py-3 text-sm hover:text-teal-200" href="orders.html">Riwayat Pesanan</a><button class="border-t border-white/15 py-3 text-left text-sm hover:text-teal-200" id="logoutButton">Keluar</button></nav>
+            </aside>
+            <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
+                <h2 class="font-heading text-xl font-extrabold text-slate-900">Informasi Akun</h2>
+                <form id="profileForm" class="mt-5 grid gap-4 sm:grid-cols-2">
+                    <label class="text-xs font-bold text-slate-600">Nama lengkap<input class="mt-1.5 min-h-11 w-full rounded-lg border border-slate-200 px-3 text-sm font-normal" name="name" required></label>
+                    <label class="text-xs font-bold text-slate-600">Email<input class="mt-1.5 min-h-11 w-full rounded-lg border border-slate-200 px-3 text-sm font-normal" name="email" type="email" required></label>
+                    <label class="text-xs font-bold text-slate-600">Nomor telepon<input class="mt-1.5 min-h-11 w-full rounded-lg border border-slate-200 px-3 text-sm font-normal" name="phone" required></label>
+                    <label class="text-xs font-bold text-slate-600">Tanggal bergabung<input class="mt-1.5 min-h-11 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm font-normal" value="24 November 2026" disabled></label>
+                    <label class="text-xs font-bold text-slate-600 sm:col-span-2">Alamat<textarea class="mt-1.5 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm font-normal" name="address" rows="3"></textarea></label>
+                    <div class="flex flex-wrap gap-3 sm:col-span-2"><button class="rounded-lg bg-teal-700 px-5 py-3 font-bold text-white hover:bg-teal-800" type="submit">Simpan Perubahan</button><button class="rounded-lg border border-rose-200 px-5 py-3 font-bold text-rose-700 hover:bg-rose-50" type="button" id="resetData">Reset Data Dummy</button></div>
+                </form>
+            </section>
+        </section>
+    </main>
+    <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script><script src="assets/js/data.js"></script><script src="assets/js/storage.js"></script><script src="assets/js/auth.js"></script>
+    <script src="assets/js/shared.js"></script><script src="assets/js/profile.js"></script>
+</body>
+</html>

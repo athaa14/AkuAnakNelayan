@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="id">
+<head>
+    <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Daftar - AkuAnakNelayan</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css"><script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex min-h-screen flex-col bg-white font-sans text-slate-800">
+    <main class="grid flex-1 lg:grid-cols-2">
+        <div class="relative hidden min-h-[650px] lg:block"><img class="absolute inset-0 h-full w-full object-cover" src="https://images.unsplash.com/photo-1534043464124-3be32fe000c9?auto=format&fit=crop&w=1200&q=85" alt="Perahu nelayan di Pangandaran"><div class="absolute inset-0 bg-slate-900/45"></div><div class="absolute bottom-12 left-12 max-w-lg text-white"><p class="text-xs font-extrabold uppercase tracking-[.2em]">AkuAnakNelayan</p><h2 class="mt-3 font-heading text-4xl font-extrabold">Belanja langsung dari nelayan lokal.</h2></div></div>
+        <div class="grid place-items-center px-5 py-10 sm:px-10">
+            <form class="w-full max-w-md" id="authForm" data-auth-mode="register">
+                <a class="font-heading text-lg font-extrabold text-slate-900" href="index.html">Laut <span class="text-teal-700">Pangandaran</span></a>
+                <h1 class="mt-7 font-heading text-3xl font-extrabold text-slate-900">Buat akun baru</h1><p class="mt-2 text-sm text-slate-500">Daftar untuk mulai membeli hasil laut segar.</p>
+                <div class="mt-6 grid gap-3 sm:grid-cols-2">
+                    <label class="text-xs font-bold text-slate-600 sm:col-span-2">Nama lengkap<input class="mt-1.5 min-h-11 w-full rounded-lg border border-slate-200 px-3 text-sm font-normal" name="name" placeholder="Nama lengkap" required></label>
+                    <label class="text-xs font-bold text-slate-600 sm:col-span-2">Email<input class="mt-1.5 min-h-11 w-full rounded-lg border border-slate-200 px-3 text-sm font-normal" name="email" type="email" placeholder="nama@email.com" required></label>
+                    <label class="text-xs font-bold text-slate-600">Nomor telepon<input class="mt-1.5 min-h-11 w-full rounded-lg border border-slate-200 px-3 text-sm font-normal" name="phone" placeholder="0812..." required></label>
+                    <label class="text-xs font-bold text-slate-600">Alamat<input class="mt-1.5 min-h-11 w-full rounded-lg border border-slate-200 px-3 text-sm font-normal" name="address" placeholder="Alamat pengiriman" required></label>
+                    <label class="text-xs font-bold text-slate-600">Password<input class="mt-1.5 min-h-11 w-full rounded-lg border border-slate-200 px-3 text-sm font-normal" name="password" type="password" placeholder="Minimal 4 karakter" required></label>
+                    <label class="text-xs font-bold text-slate-600">Konfirmasi password<input class="mt-1.5 min-h-11 w-full rounded-lg border border-slate-200 px-3 text-sm font-normal" name="confirm" type="password" placeholder="Ulangi password" required></label>
+                </div>
+                <p class="mt-2 min-h-5 text-sm font-medium text-rose-600" id="authError" role="alert"></p>
+                <button class="mt-2 w-full rounded-lg bg-teal-700 px-5 py-3 font-bold text-white hover:bg-teal-800" type="submit">Daftar Sekarang</button>
+                <p class="mt-5 text-center text-sm text-slate-500">Sudah punya akun? <a class="font-bold text-teal-700 hover:text-teal-900" href="login.html">Masuk</a></p>
+            </form>
+        </div>
+    </main>
+    <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script><script src="assets/js/data.js"></script><script src="assets/js/storage.js"></script><script src="assets/js/auth.js"></script>
+    <script src="assets/js/shared.js"></script><script src="assets/js/auth-page.js"></script>
+</body>
+</html>

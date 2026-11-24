@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="id">
+<head>
+    <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Masuk - AkuAnakNelayan</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css"><script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex min-h-screen flex-col bg-white font-sans text-slate-800">
+    <main class="grid flex-1 lg:grid-cols-2">
+        <div class="relative hidden min-h-[650px] lg:block"><img class="absolute inset-0 h-full w-full object-cover" src="https://images.unsplash.com/photo-1534043464124-3be32fe000c9?auto=format&fit=crop&w=1200&q=85" alt="Perahu nelayan di Pangandaran"><div class="absolute inset-0 bg-slate-900/45"></div><div class="absolute bottom-12 left-12 max-w-lg text-white"><p class="text-xs font-extrabold uppercase tracking-[.2em]">AkuAnakNelayan</p><h2 class="mt-3 font-heading text-4xl font-extrabold">Kesegaran laut, dekat dengan rumah.</h2></div></div>
+        <div class="grid place-items-center px-5 py-12 sm:px-10">
+            <form class="w-full max-w-md" id="authForm" data-auth-mode="login">
+                <a class="font-heading text-lg font-extrabold text-slate-900" href="index.html">Laut <span class="text-teal-700">Pangandaran</span></a>
+                <h1 class="mt-10 font-heading text-3xl font-extrabold text-slate-900">Selamat datang</h1><p class="mt-2 text-sm text-slate-500">Masuk untuk mengelola belanja dan pesanan Anda.</p>
+                <label class="mt-7 block text-xs font-bold text-slate-600">Email<input class="mt-1.5 min-h-12 w-full rounded-lg border border-slate-200 px-3 text-sm font-normal" name="email" type="email" value="andi@example.com" required></label>
+                <label class="mt-4 block text-xs font-bold text-slate-600">Password<input class="mt-1.5 min-h-12 w-full rounded-lg border border-slate-200 px-3 text-sm font-normal" name="password" type="password" placeholder="Minimal 4 karakter" required></label>
+                <p class="mt-2 min-h-5 text-sm font-medium text-rose-600" id="authError" role="alert"></p>
+                <button class="mt-3 w-full rounded-lg bg-teal-700 px-5 py-3 font-bold text-white hover:bg-teal-800" type="submit">Masuk</button>
+                <p class="mt-6 text-center text-sm text-slate-500">Belum punya akun? <a class="font-bold text-teal-700 hover:text-teal-900" href="register.html">Daftar sekarang</a></p>
+            </form>
+        </div>
+    </main>
+    <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script><script src="assets/js/data.js"></script><script src="assets/js/storage.js"></script><script src="assets/js/auth.js"></script>
+    <script src="assets/js/shared.js"></script><script src="assets/js/auth-page.js"></script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="id">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Produk - AkuAnakNelayan</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css"><script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex min-h-screen flex-col bg-slate-50 font-sans text-slate-800">
+    <main class="mx-auto w-full max-w-7xl flex-1 px-4 sm:px-6 lg:px-8">
+        <header class="border-b border-slate-200 bg-amber-50 px-5 py-8 sm:px-8">
+            <p class="text-xs font-bold text-slate-500">Beranda <span class="mx-1">/</span> Produk</p>
+            <h1 id="productsHeading" class="mt-2 font-heading text-3xl font-extrabold text-slate-900">Semua Produk</h1>
+            <p id="productsDescription" class="mt-2 text-sm text-slate-600">Pilih hasil laut segar langsung dari nelayan Pangandaran.</p>
+            <div id="sellerSummary" class="mt-5 hidden items-center gap-3 rounded-xl border border-amber-100 bg-white/80 p-3 sm:max-w-md">
+                <img id="sellerSummaryImage" class="h-12 w-12 rounded-full object-cover" alt="">
+                <div class="min-w-0">
+                    <strong id="sellerSummaryName" class="block text-sm text-slate-900"></strong>
+                    <span id="sellerSummaryDetails" class="mt-1 block text-xs text-slate-600"></span>
+                </div>
+            </div>
+        </header>
+        <section class="py-7">
+            <div class="grid gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:grid-cols-2 lg:grid-cols-5">
+                <label class="block text-xs font-bold text-slate-600 lg:col-span-1">Cari produk<input id="searchProduct" class="mt-1.5 min-h-11 w-full rounded-lg border border-slate-200 px-3 text-sm font-normal text-slate-800 outline-none focus:border-teal-700 focus:ring-2 focus:ring-teal-700/10" placeholder="Nama produk"></label>
+                <label class="block text-xs font-bold text-slate-600">Kategori<select id="categoryFilter" class="mt-1.5 min-h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm font-normal outline-none focus:border-teal-700"><option value="">Semua kategori</option><option>Ikan</option><option>Udang</option><option>Cumi-cumi</option><option>Kepiting</option><option>Kerang</option><option>Hasil Laut Lainnya</option></select></label>
+                <label class="block text-xs font-bold text-slate-600">Lokasi<select id="locationFilter" class="mt-1.5 min-h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm font-normal outline-none focus:border-teal-700"><option value="">Semua lokasi</option><option>Pangandaran</option><option>Sidamulih</option><option>Cikembulan</option><option>Batu Karas</option><option>Madasari</option></select></label>
+                <label class="block text-xs font-bold text-slate-600">Kesegaran<select id="freshFilter" class="mt-1.5 min-h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm font-normal outline-none focus:border-teal-700"><option value="">Semua kesegaran</option><option>Sangat Segar</option><option>Segar</option><option>Perlu Segera Diolah</option></select></label>
+                <label class="block text-xs font-bold text-slate-600">Urutkan<select id="sortFilter" class="mt-1.5 min-h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm font-normal outline-none focus:border-teal-700"><option value="latest">Produk terbaru</option><option value="low">Harga terendah</option><option value="high">Harga tertinggi</option><option value="best">Terlaris</option></select></label>
+            </div>
+            <div id="productGrid" class="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4"></div>
+        </section>
+    </main>
+    <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script><script src="assets/js/data.js"></script><script src="assets/js/storage.js"></script><script src="assets/js/auth.js"></script>
+    <script src="assets/js/shared.js"></script><script src="assets/js/products.js"></script>
+</body>
+</html>
