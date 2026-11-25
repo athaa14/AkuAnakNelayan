@@ -1,11 +1,27 @@
 const DATA = {
+  categories: ["Ikan", "Udang", "Cumi-cumi", "Kepiting", "Kerang", "Hasil Laut Lainnya"],
+  siteSettings: { shippingCostPerStore: 10000, requireVerification: false },
+  siteContent: {
+    heroEyebrow: "Langsung dari nelayan Pangandaran",
+    heroTitle: "Hasil laut segar, langsung dari sumbernya.",
+    heroDescription: "Temukan tangkapan harian dengan informasi stok, kesegaran, dan dokumentasi penangkapan yang jelas.",
+    heroImage: "https://images.unsplash.com/photo-1534043464124-3be32fe000c9?auto=format&fit=crop&w=1400&q=85",
+    pages: {
+      help: { title: "Bantuan", body: "Cari produk, baca detail stok dan dokumentasi tangkapan, lalu tambahkan ke keranjang. Checkout adalah simulasi: tidak ada pembayaran uang sungguhan.\n\nSetelah pesanan dibuat, admin dapat mengonfirmasi pembayaran simulasi dan penjual memproses pesanan sesuai alur status." },
+      about: { title: "Tentang Kami", body: "AkuAnakNelayan adalah marketplace hasil laut Pangandaran yang menghubungkan nelayan dengan konsumen. Kami menampilkan informasi stok, kesegaran, waktu tangkapan, dan dokumentasi dari penjual.\n\nProyek ini menggunakan data dummy dan berjalan sepenuhnya di browser melalui LocalStorage." },
+      privacy: { title: "Kebijakan Privasi", body: "Data akun, produk, dan pesanan disimpan hanya di LocalStorage browser Anda sebagai simulasi. Kami tidak mengirimkan data ke server dan tidak menyimpan password asli.\n\nReset data dapat dilakukan melalui halaman pengaturan admin atau profil pengguna." },
+      terms: { title: "Syarat dan Ketentuan", body: "Seluruh transaksi di website ini adalah simulasi untuk keperluan demonstrasi. Tidak ada pembayaran, pengiriman, atau jaminan produk yang sesungguhnya.\n\nDokumentasi hasil tangkapan berasal dari penjual dan belum diverifikasi secara independen." },
+      shipping: { title: "Kebijakan Pengiriman", body: "Biaya pengiriman dihitung per toko sesuai pengaturan admin dan bersifat simulasi. Tidak ada integrasi dengan jasa ekspedisi.\n\nStatus pengiriman pada halaman pesanan hanya merupakan rangkaian simulasi." },
+      contact: { title: "Hubungi Kami", body: "AkuAnakNelayan, Pangandaran, Jawa Barat.\nEmail: halo@lautpangandaran.id\nTelepon: +62 812-3456-7890" }
+    }
+  },
   sellers: [
-    {id:1,ownerUserId:"seller-demo-1",shopName:"Nelayan Bahari",ownerName:"Budi Santoso",location:"Pangandaran",phone:"081234567801",rating:4.8,totalProducts:5,description:"Hasil tangkapan segar langsung dari nelayan Pangandaran.",image:"https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=300&q=80"},
-    {id:2,ownerUserId:"seller-demo-2",shopName:"Karang Laut",ownerName:"Asep Hidayat",location:"Sidamulih",phone:"081234567802",rating:4.7,totalProducts:5,description:"Menangkap dan mengolah hasil laut dengan standar kebersihan tinggi.",image:"https://images.unsplash.com/photo-1568602471122-7832951cc4c5?auto=format&fit=crop&w=300&q=80"},
-    {id:3,ownerUserId:"seller-demo-3",shopName:"Samudra Biru",ownerName:"Roni Wijaya",location:"Cikembulan",phone:"081234567803",rating:4.9,totalProducts:5,description:"Udang dan ikan laut pilihan dari perairan selatan Jawa.",image:"https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80"},
-    {id:4,ownerUserId:"seller-demo-4",shopName:"Ikan Kita",ownerName:"Dedi Permana",location:"Batu Karas",phone:"081234567804",rating:4.6,totalProducts:5,description:"Menyediakan ikan harian dengan dokumentasi tangkapan.",image:"https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80"},
-    {id:5,ownerUserId:"seller-demo-5",shopName:"Nelayan Nusantara",ownerName:"Agus Salim",location:"Pangandaran",phone:"081234567805",rating:4.8,totalProducts:5,description:"Pasokan hasil laut segar untuk kebutuhan rumah tangga.",image:"https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80"},
-    {id:6,ownerUserId:"seller-demo-6",shopName:"Laut Selatan",ownerName:"Slamet Riyadi",location:"Madasari",phone:"081234567806",rating:4.7,totalProducts:5,description:"Bergerak langsung dari kapal nelayan hingga ke konsumen.",image:"https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=300&q=80"}
+    {id:1,ownerUserId:"seller-demo-1",shopName:"Nelayan Bahari",ownerName:"Budi Santoso",location:"Pangandaran",phone:"081234567801",rating:4.8,totalProducts:5,isVerified:true,description:"Hasil tangkapan segar langsung dari nelayan Pangandaran.",image:"https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=300&q=80"},
+    {id:2,ownerUserId:"seller-demo-2",shopName:"Karang Laut",ownerName:"Asep Hidayat",location:"Sidamulih",phone:"081234567802",rating:4.7,totalProducts:5,isVerified:true,description:"Menangkap dan mengolah hasil laut dengan standar kebersihan tinggi.",image:"https://images.unsplash.com/photo-1568602471122-7832951cc4c5?auto=format&fit=crop&w=300&q=80"},
+    {id:3,ownerUserId:"seller-demo-3",shopName:"Samudra Biru",ownerName:"Roni Wijaya",location:"Cikembulan",phone:"081234567803",rating:4.9,totalProducts:5,isVerified:true,description:"Udang dan ikan laut pilihan dari perairan selatan Jawa.",image:"https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80"},
+    {id:4,ownerUserId:"seller-demo-4",shopName:"Ikan Kita",ownerName:"Dedi Permana",location:"Batu Karas",phone:"081234567804",rating:4.6,totalProducts:5,isVerified:true,description:"Menyediakan ikan harian dengan dokumentasi tangkapan.",image:"https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80"},
+    {id:5,ownerUserId:"seller-demo-5",shopName:"Nelayan Nusantara",ownerName:"Agus Salim",location:"Pangandaran",phone:"081234567805",rating:4.8,totalProducts:5,isVerified:true,description:"Pasokan hasil laut segar untuk kebutuhan rumah tangga.",image:"https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80"},
+    {id:6,ownerUserId:"seller-demo-6",shopName:"Laut Selatan",ownerName:"Slamet Riyadi",location:"Madasari",phone:"081234567806",rating:4.7,totalProducts:5,isVerified:true,description:"Bergerak langsung dari kapal nelayan hingga ke konsumen.",image:"https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=300&q=80"}
   ],
   users:[
     {id:1,name:"Andi Prasetyo",email:"andi@example.com",phone:"081234567890",address:"Jl. Merdeka No. 12, Pangandaran",profileImage:"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=300&q=80",role:"buyer"},
@@ -15,7 +31,8 @@ const DATA = {
     {id:"seller-demo-3",name:"Roni Wijaya",email:"samudra@example.com",phone:"081234567803",address:"Cikembulan, Pangandaran",profileImage:"https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80",role:"seller",sellerId:3},
     {id:"seller-demo-4",name:"Dedi Permana",email:"ikankita@example.com",phone:"081234567804",address:"Batu Karas, Pangandaran",profileImage:"https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80",role:"seller",sellerId:4},
     {id:"seller-demo-5",name:"Agus Salim",email:"nusantara@example.com",phone:"081234567805",address:"Pangandaran, Jawa Barat",profileImage:"https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80",role:"seller",sellerId:5},
-    {id:"seller-demo-6",name:"Slamet Riyadi",email:"lautselatan@example.com",phone:"081234567806",address:"Madasari, Pangandaran",profileImage:"https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=300&q=80",role:"seller",sellerId:6}
+    {id:"seller-demo-6",name:"Slamet Riyadi",email:"lautselatan@example.com",phone:"081234567806",address:"Madasari, Pangandaran",profileImage:"https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=300&q=80",role:"seller",sellerId:6},
+    {id:"admin-demo-1",name:"Administrator",email:"admin@example.com",phone:"081200000000",address:"Pangandaran, Jawa Barat",profileImage:"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=300&q=80",role:"admin",isActive:true}
   ],
   reviews:[
     {id:1,productId:1,userName:"Andi",rating:5,comment:"Ikan datang dingin dan ukurannya sesuai. Sangat memuaskan.",date:"2026-11-23",image:null},

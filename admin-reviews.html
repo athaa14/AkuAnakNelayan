@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="id">
+<head>
+    <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Moderasi Ulasan - AkuAnakNelayan</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css"><script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex min-h-screen flex-col bg-slate-50 font-sans text-slate-800" data-admin-active="admin-reviews">
+    <main class="mx-auto w-full max-w-7xl flex-1 px-4 sm:px-6 lg:px-8">
+        <header class="mt-7 rounded-2xl bg-amber-50 px-5 py-7 sm:px-8">
+            <p class="text-xs font-bold uppercase tracking-[.16em] text-teal-700">Area admin</p>
+            <h1 class="mt-2 font-heading text-3xl font-extrabold text-slate-900">Moderasi ulasan</h1>
+            <p class="mt-2 text-sm text-slate-600">Sembunyikan ulasan yang tidak sesuai agar tidak tampil pada detail produk.</p>
+        </header>
+        <section class="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+            <div class="grid gap-3 sm:grid-cols-4">
+                <label class="text-xs font-bold text-slate-600">Cari<input id="reviewSearch" type="search" placeholder="Pengguna atau komentar" class="mt-1 block min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm font-normal text-slate-800"></label>
+                <label class="text-xs font-bold text-slate-600">Produk<select id="productFilter" class="mt-1 block min-h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-800"></select></label>
+                <label class="text-xs font-bold text-slate-600">Rating<select id="ratingFilter" class="mt-1 block min-h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-800"><option value="Semua">Semua rating</option><option>5</option><option>4</option><option>3</option><option>2</option><option>1</option></select></label>
+                <label class="text-xs font-bold text-slate-600">Status<select id="statusFilter" class="mt-1 block min-h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-800"><option value="Semua">Semua status</option><option value="Tampil">Tampil</option><option value="Disembunyikan">Disembunyikan</option></select></label>
+            </div>
+            <div id="reviewsEmpty" class="mt-6 hidden rounded-xl border border-dashed border-slate-300 px-4 py-10 text-center text-sm text-slate-500">Tidak ada ulasan yang cocok.</div>
+            <div id="reviewTableWrap" class="mt-6 overflow-x-auto">
+                <table class="w-full min-w-[900px] text-left text-sm">
+                    <thead class="bg-slate-50 text-xs uppercase tracking-wide text-slate-500"><tr><th class="px-4 py-3">Produk</th><th class="px-4 py-3">Pengguna</th><th class="px-4 py-3">Rating</th><th class="px-4 py-3">Komentar</th><th class="px-4 py-3">Tanggal</th><th class="px-4 py-3">Status</th><th class="px-4 py-3">Aksi</th></tr></thead>
+                    <tbody id="reviewRows" class="divide-y divide-slate-100"></tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+    <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script><script src="assets/js/data.js"></script><script src="assets/js/storage.js"></script><script src="assets/js/auth.js"></script>
+    <script src="assets/js/shared.js"></script><script src="assets/js/admin-common.js"></script><script src="assets/js/admin-reviews.js"></script>
+</body>
+</html>

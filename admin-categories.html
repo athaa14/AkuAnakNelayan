@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="id">
+<head>
+    <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Kategori Produk - AkuAnakNelayan</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css"><script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex min-h-screen flex-col bg-slate-50 font-sans text-slate-800" data-admin-active="admin-categories">
+    <main class="mx-auto w-full max-w-5xl flex-1 px-4 sm:px-6 lg:px-8">
+        <header class="mt-7 rounded-2xl bg-amber-50 px-5 py-7 sm:px-8">
+            <p class="text-xs font-bold uppercase tracking-[.16em] text-teal-700">Area admin</p>
+            <h1 class="mt-2 font-heading text-3xl font-extrabold text-slate-900">Kategori produk</h1>
+            <p class="mt-2 text-sm text-slate-600">Kategori dipakai pada filter katalog pembeli dan form produk penjual.</p>
+        </header>
+        <section class="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+            <form id="categoryForm" class="flex flex-wrap items-end gap-3">
+                <label class="min-w-56 flex-1 text-xs font-bold text-slate-600">Kategori baru<input name="name" required minlength="2" placeholder="Misalnya: Ikan Bakar" class="mt-1 block min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm font-normal text-slate-800"></label>
+                <button class="rounded-lg bg-teal-700 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-teal-800" type="submit">Tambah kategori</button>
+            </form>
+            <p id="categoryError" class="mt-2 text-sm font-semibold text-rose-700"></p>
+            <div id="categoryList" class="mt-6 divide-y divide-slate-100"></div>
+        </section>
+    </main>
+    <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script><script src="assets/js/data.js"></script><script src="assets/js/storage.js"></script><script src="assets/js/auth.js"></script>
+    <script src="assets/js/shared.js"></script><script src="assets/js/admin-common.js"></script><script src="assets/js/admin-categories.js"></script>
+</body>
+</html>

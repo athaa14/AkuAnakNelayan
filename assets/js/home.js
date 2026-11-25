@@ -1,5 +1,10 @@
 renderNavbar("home");
-const products = Store.get("products", DATA.products).filter(product => product.isPublished !== false);
+const siteContent = Store.get("siteContent", DATA.siteContent);
+document.querySelector("#heroEyebrow").textContent = siteContent.heroEyebrow;
+document.querySelector("#heroTitle").textContent = siteContent.heroTitle;
+document.querySelector("#heroDescription").textContent = siteContent.heroDescription;
+document.querySelector("#heroImage").src = siteContent.heroImage;
+const products = catalogProducts();
 const newest = [...products].sort((a, b) => b.catchDate.localeCompare(a.catchDate)).slice(0, 8);
 const best = [...products].sort((a, b) => b.sold - a.sold).slice(0, 8);
 document.querySelector("#homeNewest").innerHTML = newest.map(productCard).join("");

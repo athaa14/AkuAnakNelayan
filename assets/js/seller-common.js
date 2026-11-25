@@ -7,16 +7,7 @@ if (sellerReady && sellerShop) {
     renderFooter();
 }
 
-function sellerStatusBadge(status) {
-    const color = status === "Dibatalkan"
-        ? "bg-rose-100 text-rose-700"
-        : status === "Belum Dibayar"
-            ? "bg-amber-100 text-amber-800"
-            : status === "Selesai"
-                ? "bg-emerald-50 text-emerald-700"
-                : "bg-teal-50 text-teal-700";
-    return `<span class="inline-flex whitespace-nowrap rounded-full px-3 py-1 text-xs font-bold ${color}">${escapeHTML(status)}</span>`;
-}
+const sellerStatusBadge = statusBadge;
 
 function sellerOrderItems(order) {
     return order.products.filter(item => item.sellerId === sellerShop.id || (!item.sellerId && order.sellerId === sellerShop.id));

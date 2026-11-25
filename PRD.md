@@ -128,9 +128,11 @@ Kebutuhan penjual:
 
 **C. Administrator**
 
-Administrator merupakan pihak yang bertugas mengelola dan memantau sistem.
+Administrator merupakan pihak yang bertugas mengelola dan memantau sistem. Role admin tersedia pada versi ini dengan area kerja terpisah yang memakai sistem desain dan sumber data yang sama dengan portal penjual.
 
-Pada versi awal frontend, administrator dapat menjadi pengembangan berikutnya. Jika halaman admin dibuat, pengelolaan data tetap menggunakan simulasi LocalStorage.
+Pada versi frontend ini, administrator dapat: masuk melalui halaman login yang sama, melihat dasbor statistik marketplace, mengelola akun pengguna (mengubah role dan status aktif), serta mempromosikan pengguna menjadi penjual beserta profil tokonya. Pengelolaan data tetap menggunakan simulasi LocalStorage dengan key yang sama seperti halaman pembeli dan penjual.
+
+Selain itu, administrator dapat memverifikasi toko, menyembunyikan/menghapus produk, memantau dan memproses transaksi lintas toko, memoderasi ulasan, melihat laporan penjualan serta mengekspornya ke CSV, mengelola kategori, mengubah konten hero dan halaman statis, serta mengatur biaya pengiriman simulasi, kebijakan verifikasi penjual, dan reset data dummy.
 
 ### **6. Struktur Halaman Website (Sitemap)**
 
@@ -156,8 +158,21 @@ Website memiliki halaman-halaman berikut:
 | 16  | Transaksi Penjual | seller-orders.html |
 | 17  | Detail Transaksi Penjual | seller-order-detail.html |
 | 18  | Profil Toko | seller-profile.html |
+| 19  | Dashboard Admin | admin-dashboard.html |
+| 20  | Kelola Pengguna | admin-users.html |
+| 21  | Verifikasi Penjual | admin-sellers.html |
+| 22  | Moderasi Produk | admin-products.html |
+| 23  | Semua Transaksi | admin-orders.html |
+| 24  | Detail Transaksi Admin | admin-order-detail.html |
+| 25  | Moderasi Ulasan | admin-reviews.html |
+| 26  | Laporan Penjualan | admin-reports.html |
+| 27  | Kategori Produk | admin-categories.html |
+| 28  | Konten Website | admin-content.html |
+| 29  | Pengaturan Admin | admin-settings.html |
+| 30  | Halaman Informasi | content.html |
+| 31  | Pratinjau Produk Admin | admin-product-preview.html |
 
-Login menggunakan satu halaman tanpa pilihan peran dan mengarahkan pengguna berdasarkan role akun. Register biasa otomatis membuat akun pembeli; tautan **Daftar sebagai Penjual** membuka formulir yang sama dengan tambahan informasi awal toko. Dashboard Admin belum tersedia pada implementasi saat ini.
+Login menggunakan satu halaman tanpa pilihan peran dan mengarahkan pengguna berdasarkan role akun: buyer ke beranda marketplace, seller ke dashboard penjual, dan admin ke dashboard admin. Register biasa otomatis membuat akun pembeli; tautan **Daftar sebagai Penjual** membuka formulir yang sama dengan tambahan informasi awal toko. Pendaftaran publik tidak dapat membuat akun admin. Halaman `content.html` menampilkan konten statis (Bantuan, Tentang Kami, Kebijakan Privasi, Syarat dan Ketentuan, Pengiriman, dan Kontak) yang dapat diubah dari area admin.
 
 Halaman tambahan yang dapat dikembangkan:
 
@@ -165,7 +180,7 @@ Halaman tambahan yang dapat dikembangkan:
 - Tentang Kami.
 - Kebijakan Privasi.
 - Syarat dan Ketentuan.
-- Dashboard Admin.
+- Sistem notifikasi dan chat.
 
 ### **7. Kebutuhan Fitur Website**
 
@@ -515,6 +530,7 @@ Komponen:
 - Tombol Login.
 - Link Register.
 - Tidak ada pilihan jenis akun; dashboard tujuan ditentukan dari role akun.
+- Role admin dikenali otomatis dan diarahkan ke `admin-dashboard.html`.
 
 Validasi:
 
@@ -605,7 +621,59 @@ Halaman profil toko menampilkan dan mengizinkan perubahan pada nama toko, nama p
 - Setelah login, buyer diarahkan ke beranda pembeli dan seller ke dashboard penjual.
 - Pembeli yang membuka URL portal penjual diarahkan ke login atau halaman yang sesuai; akun tanpa peran penjual tidak dapat melihat atau mengubah data penjual.
 - Sediakan akun penjual demo beserta cara masuk pada README untuk pengujian lokal. Password tidak disimpan sebagai data akun.
-- Dashboard dan autentikasi role Admin belum tersedia dalam versi ini.
+- Dashboard dan autentikasi role Admin tersedia melalui `admin-dashboard.html`; pembuatan akun admin tidak tersedia melalui formulir register publik.
+
+#### **7.13 Area Admin**
+
+Area admin memakai sistem desain dan sumber data yang sama dengan portal penjual. Akun admin mendapat navbar terpisah bertanda "Area Admin" dan hanya dapat diakses oleh role `admin` yang aktif.
+
+##### **7.13.1 Dashboard Admin**
+
+- Kartu ringkasan: jumlah pengguna, jumlah toko, produk tayang, pesanan aktif, dan omzet periode berjalan.
+- Pemilih rentang 7 hari dan 30 hari yang memperbarui statistik dan grafik.
+- Grafik penjualan sederhana bersumber dari seluruh transaksi yang dibayar dan tidak dibatalkan, tanpa dependensi chart tambahan.
+- Tabel transaksi terbaru lintas toko: nomor pesanan, tanggal, pembeli, toko, produk, total, dan status.
+- Ringkasan produk dengan stok menipis atau habis dari seluruh toko.
+- Aturan omzet dan pesanan aktif mengikuti aturan yang sama dengan dashboard penjual.
+
+##### **7.13.2 Kelola Pengguna**
+
+- Tabel seluruh akun dengan pencarian nama/email, filter role, dan filter status.
+- Administrator dapat mengubah role (`buyer`, `seller`, `admin`) serta mengaktifkan/menonaktifkan akun.
+- Promosi menjadi `seller` membuka formulir nama toko, lokasi, dan deskripsi; profil toko disimpan ke key `sellers`.
+- Administrator tidak dapat menonaktifkan akun sendiri atau menurunkan role admin terakhir yang masih aktif.
+- Akun yang dinonaktifkan ditolak saat login dan sesinya dihapus pada pemeriksaan role berikutnya.
+
+##### **7.13.3 Verifikasi Penjual**
+
+- Tabel seluruh toko dengan pencarian, jumlah produk, rating, dan status verifikasi.
+- Administrator dapat memverifikasi atau membatalkan verifikasi toko.
+- Jika pengaturan verifikasi diaktifkan, produk dari toko yang belum terverifikasi tidak muncul di katalog pembeli.
+
+##### **7.13.4 Moderasi Produk dan Ulasan**
+
+- Administrator melihat seluruh produk lintas toko dengan filter toko, kategori, stok, dan publikasi.
+- Produk dapat disembunyikan/ditampilkan; penghapusan permanen hanya untuk produk yang tidak direferensikan transaksi lama.
+- Ulasan dapat disembunyikan/ditampilkan atau dihapus; ulasan tersembunyi tidak tampil pada detail produk.
+
+##### **7.13.5 Transaksi Lintas Toko**
+
+- Administrator melihat seluruh pesanan dengan pencarian nomor/pembeli, filter toko, dan filter status.
+- Detail transaksi menampilkan item snapshot, pembeli, toko, alamat, metode pembayaran, catatan, dan riwayat status.
+- Administrator dapat mengonfirmasi pembayaran (`Belum Dibayar` → `Dikemas`) dan membatalkan pesanan sebelum status `Selesai`.
+- Pembatalan mencatat riwayat dan mengembalikan stok sekali saja menggunakan penanda `stockRestored`; status tidak boleh melompati alur.
+
+##### **7.13.6 Laporan, Kategori, dan Konten**
+
+- Laporan penjualan merangkum omzet, pesanan, item terjual, dan kontribusi per toko untuk rentang 7 hari, 30 hari, atau seluruh waktu; tersedia ekspor CSV.
+- Kategori dapat ditambah, diubah, dan dihapus jika tidak digunakan; perubahan nama kategori memperbarui produk terkait serta filter katalog dan form penjual.
+- Konten hero beranda dan halaman statis (`content.html`) dapat diubah administrator.
+
+##### **7.13.7 Pengaturan**
+
+- Biaya pengiriman per toko untuk checkout simulasi dapat diubah dan langsung dipakai transaksi baru.
+- Pengaturan kebijakan verifikasi penjual dapat diaktifkan/dinonaktifkan.
+- Reset data dummy mengembalikan seluruh key LocalStorage ke data awal dan menghapus sesi aktif.
 
 ### **8. Struktur Data Dummy**
 
@@ -672,11 +740,11 @@ Setiap produk minimal memiliki:
 }
 ```
 
-`ownerUserId` menghubungkan satu profil toko dengan akun penjual. Produk memiliki `sellerId` sebagai pemilik. Nilai `totalProducts` diturunkan dari produk yang aktif agar tidak berbeda dari inventaris.
+`ownerUserId` menghubungkan satu profil toko dengan akun penjual. Produk memiliki `sellerId` sebagai pemilik. Nilai `totalProducts` diturunkan dari produk yang aktif agar tidak berbeda dari inventaris. Field `isVerified` menandakan status verifikasi admin; toko demo awal bernilai `true`, sedangkan toko hasil register atau promosi admin bernilai `false` sampai diverifikasi.
 
 #### **8.3 Data Pengguna**
 
-Setiap pengguna memiliki field `role` dengan nilai `buyer` atau `seller`. Akun penjual harus memiliki relasi ke profil toko melalui `sellerId`. Jangan menyimpan password asli pada data dummy atau LocalStorage.
+Setiap pengguna memiliki field `role` dengan nilai `buyer`, `seller`, atau `admin`. Akun penjual harus memiliki relasi ke profil toko melalui `sellerId`. Akun admin tidak memerlukan `sellerId`. Field opsional `isActive` (nilai default `true`) dipakai administrator untuk menonaktifkan akses login. Jangan menyimpan password asli pada data dummy atau LocalStorage.
 
 ```
 {
@@ -687,6 +755,19 @@ Setiap pengguna memiliki field `role` dengan nilai `buyer` atau `seller`. Akun p
   role: "seller",
   sellerId: 1,
   profileImage: "assets/images/profile/nelayan.jpg"
+}
+```
+
+Contoh akun admin:
+
+```
+{
+  id: "admin-demo-1",
+  name: "Administrator",
+  email: "admin@example.com",
+  phone: "081200000000",
+  role: "admin",
+  isActive: true
 }
 ```
 
@@ -732,9 +813,12 @@ Data awal sebaiknya memuat beberapa pesanan untuk setiap toko demo dengan status
   rating: 5,
   comment: "Produk sesuai dengan deskripsi.",
   date: "2026-11-24",
-  image: null
+  image: null,
+  isHidden: false
 }
 ```
+
+Field opsional `isHidden` dipakai administrator untuk menyembunyikan ulasan tanpa menghapusnya dari riwayat data.
 
 ### **9. Kebutuhan JavaScript**
 
@@ -772,6 +856,17 @@ Fitur JavaScript yang wajib dibuat:
 28. Menambah, mengubah, dan menyembunyikan produk penjual; perubahan stok dan publikasi tercermin pada katalog pembeli.
 29. Menghitung omzet dan ringkasan penjualan dari item pesanan milik penjual, dengan mengecualikan pesanan belum dibayar dan dibatalkan.
 30. Memfilter transaksi penjual serta mencatat perubahan status dan waktu pada riwayat transaksi.
+31. Memeriksa role admin dan mengarahkan pengguna ke area yang sesuai.
+32. Menampilkan statistik marketplace lintas toko pada dashboard admin.
+33. Mengubah role dan status aktif pengguna melalui halaman kelola pengguna admin.
+34. Membuat profil toko saat administrator mempromosikan pengguna menjadi penjual.
+35. Memverifikasi atau membatalkan verifikasi toko dan menerapkan kebijakan verifikasi pada katalog.
+36. Menyembunyikan, menampilkan, dan menghapus produk serta ulasan dari area admin.
+37. Menampilkan seluruh transaksi lintas toko mengikuti pencarian dan filter status.
+38. Mengonfirmasi pembayaran, membatalkan pesanan, dan mengembalikan stok secara idempoten dari area admin.
+39. Menghitung laporan penjualan per toko dan mengekspornya ke CSV.
+40. Mengelola kategori yang dipakai filter katalog dan form produk penjual.
+41. Mengelola konten hero, halaman statis, dan pengaturan simulasi transaksi.
 
 **Ketentuan JavaScript:**
 
@@ -810,6 +905,19 @@ marketplace-hasil-laut/
 ├── seller-orders.html
 ├── seller-order-detail.html
 ├── seller-profile.html
+├── admin-dashboard.html
+├── admin-users.html
+├── admin-sellers.html
+├── admin-products.html
+├── admin-product-preview.html
+├── admin-orders.html
+├── admin-order-detail.html
+├── admin-reviews.html
+├── admin-reports.html
+├── admin-categories.html
+├── admin-content.html
+├── admin-settings.html
+├── content.html
 │
 ├── assets/
 │   ├── css/
@@ -836,7 +944,21 @@ marketplace-hasil-laut/
 │   │   ├── seller-product-form.js
 │   │   ├── seller-orders.js
 │   │   ├── seller-order-detail.js
-│   │   └── seller-profile.js
+│   │   ├── seller-profile.js
+│   │   ├── admin-common.js
+│   │   ├── admin-dashboard.js
+│   │   ├── admin-users.js
+│   │   ├── admin-sellers.js
+│   │   ├── admin-products.js
+│   │   ├── admin-product-preview.js
+│   │   ├── admin-orders.js
+│   │   ├── admin-order-detail.js
+│   │   ├── admin-reviews.js
+│   │   ├── admin-reports.js
+│   │   ├── admin-categories.js
+│   │   ├── admin-content.js
+│   │   ├── admin-settings.js
+│   │   └── content.js
 │   │
 │   └── images/
 │       ├── banner/
@@ -930,6 +1052,9 @@ Data yang disimpan:
 | wishlist         | Data favorit                         |
 | orders           | Data pesanan                         |
 | reviews          | Data ulasan                          |
+| categories       | Daftar kategori produk               |
+| siteContent      | Teks hero dan isi halaman statis     |
+| siteSettings     | Biaya pengiriman dan kebijakan verifikasi |
 
 Ketentuan:
 
@@ -944,6 +1069,10 @@ Ketentuan:
 9. Data produk tetap berada pada key `products` yang sama untuk halaman pembeli dan penjual.
 10. Data statistik penjual dihitung dari transaksi dan stok yang tersimpan, bukan angka statis yang berbeda dari tabel.
 11. Semua data penjual dan transaksi yang tampil harus dibatasi oleh identitas penjual aktif.
+12. Data admin, status aktif pengguna, dan hasil promosi penjual tersimpan pada key `users` dan `sellers` yang sama.
+13. Kategori, konten, dan pengaturan area admin memakai key `categories`, `siteContent`, dan `siteSettings` serta ikut direset ke data awal.
+14. Field `isVerified` pada `sellers`, `isHidden` pada `reviews`, dan `stockRestored` pada `orders` menjadi penanda status moderasi tanpa mengubah relasi data lama.
+15. Perubahan publikasi produk, verifikasi toko, konten, dan pengaturan langsung terbaca oleh halaman pembeli pada browser yang sama.
 
 Catatan: LocalStorage hanya berlaku pada browser dan perangkat yang digunakan. Data tidak tersinkronisasi dengan pengguna lain.
 
@@ -998,6 +1127,9 @@ Untuk menghindari kesalahan proses, website harus memiliki aturan berikut:
 - Penjual tidak dapat memproses pesanan yang belum dibayar atau pesanan yang dibatalkan.
 - Stok produk tidak boleh negatif; perubahan stok harus langsung tercermin pada ketersediaan produk pembeli.
 - Karena aplikasi hanya menggunakan LocalStorage, pemeriksaan peran adalah simulasi UI, bukan mekanisme keamanan untuk produksi.
+- Hanya akun `admin` dengan status aktif yang dapat membuka halaman admin; buyer dan seller diarahkan ke halaman sesuai perannya.
+- Administrator tidak dapat menonaktifkan akun sendiri atau menurunkan role admin terakhir yang masih aktif.
+- Akun yang dinonaktifkan ditolak saat login dan sesinya dihapus pada pemeriksaan role berikutnya.
 
 ### **14. Kebutuhan Non-Fungsional**
 
@@ -1093,6 +1225,8 @@ Pengembangan dilakukan secara bertahap agar pengerjaan lebih terarah.
 - Menguji perubahan stok, harga, dan status publikasi tersinkron ke katalog pembeli.
 - Menguji alur transaksi penjual, termasuk pembatasan pesanan belum dibayar dan dibatalkan.
 - Menguji tampilan responsif.
+- Menguji alur verifikasi toko, moderasi produk/ulasan, transaksi lintas toko, dan laporan dari area admin.
+- Menguji bahwa perubahan admin langsung terbaca pada katalog dan halaman pembeli.
 
 **Tahap 9 – Finalisasi**
 
@@ -1135,6 +1269,21 @@ Website dianggap selesai apabila memenuhi kriteria berikut:
 | 25  | Transaksi Penjual | Hanya menampilkan item milik penjual aktif dan filter status berfungsi |
 | 26  | Status Pesanan | Penjual hanya dapat memproses pesanan yang sudah dibayar sesuai urutan status |
 | 27  | Profil Penjual | Perubahan profil toko tersimpan dan tampil pada katalog pembeli |
+| 28  | Role Admin | Login admin menuju dashboard admin; buyer dan seller tidak dapat membuka halaman admin |
+| 29  | Dashboard Admin | Statistik, grafik, transaksi terbaru, dan ringkasan stok dihitung dari seluruh data toko |
+| 30  | Kelola Pengguna | Admin dapat mencari, memfilter, mengubah role, dan mengaktifkan/menonaktifkan akun |
+| 31  | Promosi Penjual | Admin dapat menjadikan pembeli sebagai penjual dengan profil toko yang tersimpan |
+| 32  | Akun Nonaktif | Pengguna yang dinonaktifkan tidak dapat login kembali |
+| 33  | Akun Admin | Admin tidak dapat menonaktifkan diri sendiri atau menurunkan admin terakhir |
+| 34  | Verifikasi Penjual | Status verifikasi toko dapat diubah dan mengikuti aturan katalog |
+| 35  | Moderasi Produk | Produk lintas toko dapat difilter, disembunyikan, dan dihapus jika aman |
+| 36  | Transaksi Admin | Semua pesanan tampil dengan filter dan detail riwayat status |
+| 37  | Aksi Transaksi Admin | Pembayaran dapat dikonfirmasi dan pembatalan mengembalikan stok sekali |
+| 38  | Moderasi Ulasan | Ulasan dapat disembunyikan/dihapus dan tidak tampil pada detail produk |
+| 39  | Laporan Penjualan | Omzet per toko terhitung sesuai periode dan dapat diekspor ke CSV |
+| 40  | Kategori | Penambahan, perubahan, dan penghapusan kategori tersinkron ke produk dan filter |
+| 41  | Konten Statis | Hero dan halaman informasi dapat diubah dari area admin |
+| 42  | Pengaturan | Biaya pengiriman, verifikasi toko, dan reset data berfungsi dari area admin |
 
 ### **17. Batasan Sistem**
 
@@ -1161,7 +1310,6 @@ Apabila website dikembangkan menjadi aplikasi yang lebih lengkap, fitur berikut 
 
 - Backend menggunakan Laravel.
 - Database MySQL.
-- Dashboard administrator.
 - Backend dan database untuk autentikasi/otorisasi yang aman serta sinkronisasi multi-perangkat.
 - Penyimpanan gambar terpusat dan upload foto hasil tangkapan.
 - Verifikasi dokumentasi hasil tangkapan.
@@ -1170,7 +1318,7 @@ Apabila website dikembangkan menjadi aplikasi yang lebih lengkap, fitur berikut 
 - Tracking pengiriman secara real-time.
 - Notifikasi pesanan.
 - Chat antara pembeli dan penjual.
-- Laporan penjualan.
+- Laporan penjualan lintas periode dengan grafik dan ekspor lanjutan.
 - Sistem rating dan ulasan yang tersimpan di database.
 - Rekonsiliasi pembayaran, pencairan dana, dan laporan akuntansi.
 
@@ -1178,7 +1326,7 @@ Apabila website dikembangkan menjadi aplikasi yang lebih lengkap, fitur berikut 
 
 AkuAnakNelayan merupakan website marketplace yang menghubungkan nelayan dengan konsumen melalui sistem penjualan online.
 
-Fokus utama website bukan hanya menyediakan tempat untuk membeli hasil laut, tetapi juga menyediakan alat kerja sederhana bagi nelayan untuk mengelola produk, stok, dan pesanan. Pembeli tetap memperoleh informasi yang transparan mengenai produk, kesegaran, waktu penangkapan, serta dokumentasi hasil tangkapan. Pada versi frontend, portal penjual beroperasi menggunakan data dummy yang tersimpan di LocalStorage.
+Fokus utama website bukan hanya menyediakan tempat untuk membeli hasil laut, tetapi juga menyediakan alat kerja sederhana bagi nelayan untuk mengelola produk, stok, dan pesanan. Pembeli tetap memperoleh informasi yang transparan mengenai produk, kesegaran, waktu penangkapan, serta dokumentasi hasil tangkapan. Pada versi frontend, portal penjual dan area admin beroperasi menggunakan data dummy yang tersimpan di LocalStorage; area admin menyediakan ringkasan marketplace dan pengelolaan akun dengan sumber data yang sama.
 
 Dengan adanya informasi tersebut, pembeli diharapkan dapat lebih mudah menentukan produk yang ingin dibeli, sedangkan nelayan memiliki media tambahan untuk memasarkan hasil tangkapannya kepada konsumen yang lebih luas.
 
@@ -1212,5 +1360,7 @@ Ketentuan pengerjaan:
 20. Pastikan akses seller dibatasi pada data toko yang terkait dan data di dashboard dihitung dari sumber transaksi/produk yang sama.
 21. Jangan mengubah teknologi yang sudah ditentukan dalam PRD.
 22. Kerjakan proyek secara bertahap dan pastikan setiap tahap dapat dijalankan sebelum melanjutkan ke tahap berikutnya.
+23. Area admin memakai pola komponen dan aturan data yang sama dengan portal penjual; akun admin tidak dibuat melalui register publik.
+24. Verifikasi toko, moderasi produk/ulasan, transaksi lintas toko, laporan CSV, kategori, konten, dan pengaturan memakai key LocalStorage yang telah ditentukan serta tidak menambah dependency baru.
 
 **Prioritas utama:** Buat website yang memiliki tampilan profesional, mudah digunakan, dan seluruh fitur frontend-nya berjalan dengan baik. Jangan hanya fokus pada tampilan visual, tetapi pastikan logika JavaScript dan hubungan antarhalaman juga berfungsi.

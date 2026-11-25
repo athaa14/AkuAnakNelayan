@@ -10,7 +10,7 @@ if (!product) {
     const seller = getSeller(product.sellerId);
     const soldOut = product.stock <= 0;
     const isWishlisted = wishlistIds().includes(product.id);
-    const reviews = Store.get("reviews", DATA.reviews).filter(review => review.productId === product.id);
+    const reviews = Store.get("reviews", DATA.reviews).filter(review => review.productId === product.id && review.isHidden !== true);
     const gallery = [product.image, ...(product.proofImages || [])];
     const mainImage = document.querySelector("#mainDetailImage");
     const quantity = document.querySelector("#buyQty");

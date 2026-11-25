@@ -27,8 +27,19 @@ function getSeller(id) {
     return { ...seller, totalProducts };
 }
 
+function catalogProducts() {
+    const settings = Store.get("siteSettings", DATA.siteSettings);
+    const products = Store.get("products", DATA.products).filter(product => product.isPublished !== false);
+    if (settings.requireVerification !== true) return products;
+    const sellers = Store.get("sellers", DATA.sellers);
+    return products.filter(product => {
+        const seller = sellers.find(item => item.id === product.sellerId);
+        return seller ? seller.isVerified === true : false;
+    });
+}
+
 function getProduct(id) {
-    return Store.get("products", DATA.products).find(product => product.id === Number(id) && product.isPublished !== false);
+    return catalogProducts().find(product => product.id === Number(id));
 }
 
 function getSellerProducts(sellerId = Auth.currentSeller()?.id) {
@@ -124,9 +135,14 @@ function toast(message, iconName = "check-circle") {
 
 function renderNavbar(active = "") {
     const current = Auth.current();
+    const isAdmin = current?.role === "admin";
     const isSeller = current?.role === "seller";
     const activeClasses = "text-teal-700 after:absolute after:-bottom-7 after:left-0 after:h-0.5 after:w-full after:bg-teal-600";
-    const navItems = isSeller ? [
+    const navItems = isAdmin ? [
+        ["admin-dashboard", "Dasbor Admin", "admin-dashboard.html"],
+        ["admin-users", "Pengguna", "admin-users.html"],
+        ["products", "Katalog", "products.html"]
+    ] : isSeller ? [
         ["seller-dashboard", "Dasbor", "seller-dashboard.html"],
         ["seller-products", "Produk Saya", "seller-products.html"],
         ["seller-orders", "Transaksi", "seller-orders.html"]
@@ -140,7 +156,7 @@ function renderNavbar(active = "") {
         <a class="relative text-sm font-semibold transition hover:text-teal-700 ${active === key ? activeClasses : "text-slate-600"}" href="${href}">${label}</a>
     `).join("");
     const actions = current
-        ? `<a class="hidden h-10 w-10 place-items-center rounded-lg border border-slate-200 text-slate-700 transition hover:border-teal-600 hover:text-teal-700 sm:grid" href="${isSeller ? "seller-profile.html" : "profile.html"}" title="${isSeller ? "Profil toko" : "Profil"}">${icon("user-round", 18)}</a>`
+        ? `<a class="hidden h-10 w-10 place-items-center rounded-lg border border-slate-200 text-slate-700 transition hover:border-teal-600 hover:text-teal-700 sm:grid" href="${isAdmin ? "admin-dashboard.html" : isSeller ? "seller-profile.html" : "profile.html"}" title="${isAdmin ? "Dasbor admin" : isSeller ? "Profil toko" : "Profil"}">${icon("user-round", 18)}</a>`
         : `<a class="hidden rounded-lg bg-teal-700 px-4 py-2 text-sm font-bold text-white transition hover:bg-teal-800 sm:inline-flex" href="login.html">Masuk</a>`;
 
     document.body.insertAdjacentHTML("afterbegin", `
@@ -152,10 +168,10 @@ function renderNavbar(active = "") {
                 </a>
                 <nav id="navLinks" class="absolute left-0 right-0 top-[72px] hidden flex-col gap-5 border-b border-slate-200 bg-white p-5 shadow-lg md:static md:ml-auto md:flex md:flex-row md:items-center md:border-0 md:bg-transparent md:p-0 md:shadow-none">${navLinks}</nav>
                 <div class="ml-auto flex items-center gap-2 md:ml-0">
-                    ${isSeller ? "" : `<a class="relative hidden h-10 w-10 place-items-center rounded-lg border border-slate-200 text-slate-700 transition hover:border-teal-600 hover:text-teal-700 sm:grid" href="wishlist.html" title="Favorit">
+                    ${isSeller || isAdmin ? "" : `<a class="relative hidden h-10 w-10 place-items-center rounded-lg border border-slate-200 text-slate-700 transition hover:border-teal-600 hover:text-teal-700 sm:grid" href="wishlist.html" title="Favorit">
                         ${icon("heart", 18)}<span class="absolute -right-1.5 -top-1.5 grid h-[18px] min-w-[18px] place-items-center rounded-full border-2 border-white bg-rose-600 px-1 text-[10px] font-bold text-white" data-wishlist-count>0</span>
                     </a>`}
-                    ${isSeller ? "" : `<a class="relative grid h-10 w-10 place-items-center rounded-lg border border-slate-200 text-slate-700 transition hover:border-teal-600 hover:text-teal-700" href="cart.html" title="Keranjang">
+                    ${isSeller || isAdmin ? "" : `<a class="relative grid h-10 w-10 place-items-center rounded-lg border border-slate-200 text-slate-700 transition hover:border-teal-600 hover:text-teal-700" href="cart.html" title="Keranjang">
                         ${icon("shopping-cart", 18)}<span class="absolute -right-1.5 -top-1.5 grid h-[18px] min-w-[18px] place-items-center rounded-full border-2 border-white bg-rose-600 px-1 text-[10px] font-bold text-white" data-cart-count>0</span>
                     </a>`}
                     ${actions}
@@ -208,6 +224,54 @@ function renderSellerNavbar(active = "") {
     if (window.lucide) lucide.createIcons();
 }
 
+function statusBadge(status) {
+    const color = status === "Dibatalkan"
+        ? "bg-rose-100 text-rose-700"
+        : status === "Belum Dibayar"
+            ? "bg-amber-100 text-amber-800"
+            : status === "Selesai"
+                ? "bg-emerald-50 text-emerald-700"
+                : "bg-teal-50 text-teal-700";
+    return `<span class="inline-flex whitespace-nowrap rounded-full px-3 py-1 text-xs font-bold ${color}">${escapeHTML(status)}</span>`;
+}
+
+function renderAdminNavbar(active = "") {
+    const admin = Auth.current();
+    const navItems = [
+        ["admin-dashboard", "Dasbor", "admin-dashboard.html"],
+        ["admin-users", "Pengguna", "admin-users.html"],
+        ["admin-sellers", "Penjual", "admin-sellers.html"],
+        ["admin-products", "Produk", "admin-products.html"],
+        ["admin-orders", "Transaksi", "admin-orders.html"],
+        ["admin-reviews", "Ulasan", "admin-reviews.html"],
+        ["admin-reports", "Laporan", "admin-reports.html"],
+        ["admin-categories", "Kategori", "admin-categories.html"],
+        ["admin-content", "Konten", "admin-content.html"],
+        ["admin-settings", "Pengaturan", "admin-settings.html"]
+    ];
+    const links = navItems.map(([key, label, href]) => `
+        <a class="whitespace-nowrap rounded-lg px-3 py-2 text-sm font-semibold transition ${key === active ? "bg-teal-50 text-teal-800" : "text-slate-600 hover:bg-slate-50 hover:text-teal-700"}" href="${href}">${label}</a>
+    `).join("");
+    document.body.insertAdjacentHTML("afterbegin", `
+        <header class="sticky top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur">
+            <div class="mx-auto flex min-h-[72px] max-w-7xl flex-wrap items-center gap-3 px-4 py-3 sm:px-6 lg:px-8">
+                <a class="flex shrink-0 items-center gap-3 text-slate-900" href="admin-dashboard.html">
+                    <span class="grid h-10 w-10 place-items-center rounded-xl bg-slate-900 text-white">${icon("waves", 23)}</span>
+                    <span class="font-heading text-base font-extrabold leading-tight">AkuAnakNelayan<small class="mt-1 block font-sans text-[9px] font-bold tracking-[.16em] text-teal-700">AREA ADMIN</small></span>
+                </a>
+                <nav class="order-3 flex w-full gap-1 overflow-x-auto border-t border-slate-100 pt-2 md:order-2 md:ml-auto md:w-auto md:border-0 md:pt-0">${links}</nav>
+                <div class="ml-auto flex items-center gap-2 md:order-3">
+                    <span class="hidden max-w-40 truncate text-right text-xs font-semibold text-slate-600 lg:block">${escapeHTML(admin?.name || "Administrator")}</span>
+                    <a class="rounded-lg border border-slate-200 px-3 py-2 text-xs font-bold text-slate-700 transition hover:border-teal-700 hover:text-teal-700" href="index.html">Lihat marketplace</a>
+                    <button class="rounded-lg px-3 py-2 text-xs font-bold text-slate-500 transition hover:bg-slate-100 hover:text-slate-900" id="adminLogout">Keluar</button>
+                </div>
+            </div>
+        </header>
+    `);
+    document.querySelector("#adminLogout").addEventListener("click", () => Auth.logout());
+    if (window.lucide) lucide.createIcons();
+}
+
 function renderFooter() {
     document.body.insertAdjacentHTML("beforeend", `
         <footer class="mt-16 bg-slate-900 text-white">
@@ -220,7 +284,7 @@ function renderFooter() {
                     <p class="mt-4 max-w-xs text-sm leading-6 text-slate-300">Marketplace hasil laut langsung dari nelayan Pangandaran.</p>
                 </div>
                 <div><h2 class="font-bold">Marketplace</h2><div class="mt-4 grid gap-2 text-sm text-slate-300"><a class="hover:text-white" href="products.html">Semua Produk</a><a class="hover:text-white" href="orders.html">Pesanan Saya</a><a class="hover:text-white" href="wishlist.html">Favorit</a></div></div>
-                <div><h2 class="font-bold">Bantuan</h2><div class="mt-4 grid gap-2 text-sm text-slate-300"><a class="hover:text-white" href="#">Cara Belanja</a><a class="hover:text-white" href="#">Hubungi Kami</a><a class="hover:text-white" href="#">Kebijakan Pengiriman</a></div></div>
+                <div><h2 class="font-bold">Bantuan</h2><div class="mt-4 grid gap-2 text-sm text-slate-300"><a class="hover:text-white" href="content.html?page=help">Cara Belanja</a><a class="hover:text-white" href="content.html?page=contact">Hubungi Kami</a><a class="hover:text-white" href="content.html?page=shipping">Kebijakan Pengiriman</a><a class="hover:text-white" href="content.html?page=about">Tentang Kami</a><a class="hover:text-white" href="content.html?page=privacy">Kebijakan Privasi</a><a class="hover:text-white" href="content.html?page=terms">Syarat dan Ketentuan</a></div></div>
                 <div><h2 class="font-bold">Kontak</h2><p class="mt-4 text-sm leading-6 text-slate-300">Pangandaran, Jawa Barat<br>+62 812-3456-7890<br>halo@lautpangandaran.id</p></div>
             </div>
             <div class="border-t border-white/10 py-4 text-center text-xs text-slate-400">&copy; 2026 AkuAnakNelayan. Semua hak dilindungi.</div>

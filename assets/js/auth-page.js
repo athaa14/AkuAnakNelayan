@@ -84,5 +84,5 @@ authForm.addEventListener("submit", event => {
         authError.textContent = "Email atau password tidak valid.";
         return;
     }
-    location.href = user.role === "seller" ? "seller-dashboard.html" : "index.html";
+    location.href = user.role === "seller" ? "seller-dashboard.html" : user.role === "admin" ? "admin-dashboard.html" : "index.html";
 });

@@ -17,11 +17,19 @@ const Store = {
         }
         this.migrate();
     },
+    seedSupportData() {
+        if (!this.get("categories", null)) this.set("categories", DATA.categories);
+        const storedContent = this.get("siteContent", {}) || {};
+        const storedSettings = this.get("siteSettings", {}) || {};
+        this.set("siteContent", { ...DATA.siteContent, ...storedContent, pages: { ...DATA.siteContent.pages, ...(storedContent.pages || {}) } });
+        this.set("siteSettings", { ...DATA.siteSettings, ...storedSettings });
+    },
     migrate() {
-        const users = this.get("users", DATA.users).map(user => ({ role: "buyer", ...user }));
+        this.seedSupportData();
+        const users = this.get("users", DATA.users).map(user => ({ role: "buyer", isActive: true, ...user }));
         DATA.users.forEach(seed => {
             const existing = users.find(user => user.id === seed.id || user.email === seed.email);
-            if (existing) Object.assign(existing, { ...seed, ...existing, role: existing.role || seed.role });
+            if (existing) Object.assign(existing, { ...seed, ...existing, role: existing.role || seed.role, isActive: existing.isActive !== false });
             else users.push(seed);
         });
         this.set("users", users);
@@ -63,6 +71,9 @@ const Store = {
         this.set("sellers", DATA.sellers);
         this.set("users", DATA.users);
         this.set("reviews", DATA.reviews);
+        this.set("categories", DATA.categories);
+        this.set("siteContent", DATA.siteContent);
+        this.set("siteSettings", DATA.siteSettings);
         this.set("cart", []);
         this.set("wishlist", []);
         this.set("orders", makeDummyOrders());

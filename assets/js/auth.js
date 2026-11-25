@@ -3,11 +3,16 @@ const Auth = {
         const session = Store.get("currentUser", null);
         if (!session) return null;
         const user = Store.get("users", DATA.users).find(item => item.id === session.id);
+        if (!user) return null;
+        if (user.isActive === false) {
+            localStorage.removeItem("currentUser");
+            return null;
+        }
         return {
             ...user,
             ...session,
-            role: session.role || user?.role || "buyer",
-            sellerId: session.sellerId || user?.sellerId || null
+            role: user.role || session.role || "buyer",
+            sellerId: user.sellerId ?? session.sellerId ?? null
         };
     },
     currentSeller() {
@@ -32,6 +37,22 @@ const Auth = {
             location.href = "seller-dashboard.html";
             return false;
         }
+        if (current.role === "admin") {
+            location.href = "admin-dashboard.html";
+            return false;
+        }
+        return true;
+    },
+    requireAdmin() {
+        const current = this.current();
+        if (!current) {
+            location.href = "login.html";
+            return false;
+        }
+        if (current.role !== "admin") {
+            location.href = current.role === "seller" ? "seller-dashboard.html" : "index.html";
+            return false;
+        }
         return true;
     },
     requireSeller() {
@@ -50,7 +71,7 @@ const Auth = {
         const users = Store.get("users", DATA.users);
         const user = users.find(item => item.email.toLowerCase() === email.trim().toLowerCase());
         const role = user?.role || "buyer";
-        if (!user || password.trim().length < 4 || !["buyer", "seller"].includes(role)) return null;
+        if (!user || user.isActive === false || password.trim().length < 4 || !["buyer", "seller", "admin"].includes(role)) return null;
         const session = {
             id: user.id,
             name: user.name,
@@ -116,6 +137,7 @@ const Auth = {
                 phone: user.phone,
                 rating: 0,
                 totalProducts: 0,
+                isVerified: false,
                 description: form.description.trim(),
                 image: user.profileImage,
                 joinedAt: new Date().toISOString().slice(0, 10)

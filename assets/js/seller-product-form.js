@@ -17,6 +17,7 @@ if (sellerReady && sellerShop) {
         error.textContent = "Produk tidak ditemukan atau bukan milik toko Anda.";
         form.querySelectorAll("input,select,textarea,button").forEach(control => control.disabled = true);
     } else {
+        form.elements.category.innerHTML = `<option value="">Pilih kategori</option>` + Store.get("categories", DATA.categories).map(category => `<option value="${escapeHTML(category)}">${escapeHTML(category)}</option>`).join("");
         if (original) {
             document.querySelector("#productFormHeading").textContent = "Ubah produk";
             form.elements.name.value = original.name;

@@ -10,7 +10,8 @@ if (Auth.requireBuyer()) {
         group.push(item);
         groups.set(item.product.sellerId, group);
     });
-    const shippingCost = groups.size * 10000;
+    const shippingCostPerStore = Number(Store.get("siteSettings", DATA.siteSettings).shippingCostPerStore) || 10000;
+    const shippingCost = groups.size * shippingCostPerStore;
     const subtotal = cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
 
     if (!cart.length) {
@@ -31,7 +32,7 @@ if (Auth.requireBuyer()) {
         document.querySelector("#checkoutSubtotal").textContent = formatRupiah(subtotal);
         document.querySelector("#checkoutShipping").textContent = formatRupiah(shippingCost);
         document.querySelector("#checkoutTotal").textContent = formatRupiah(subtotal + shippingCost);
-        document.querySelector("#checkoutShippingNote").textContent = `${groups.size} toko · Rp10.000 per toko`;
+        document.querySelector("#checkoutShippingNote").textContent = `${groups.size} toko · ${formatRupiah(shippingCostPerStore)} per toko`;
 
         document.querySelector("#confirmOrder").addEventListener("click", () => {
             if (!form.reportValidity()) return;
@@ -82,8 +83,8 @@ if (Auth.requireBuyer()) {
                     paymentMethod: String(data.get("payment")),
                     note: String(data.get("note") || "").trim(),
                     subtotal: orderSubtotal,
-                    shippingCost: 10000,
-                    total: orderSubtotal + 10000,
+                    shippingCost: shippingCostPerStore,
+                    total: orderSubtotal + shippingCostPerStore,
                     status: "Belum Dibayar",
                     stockDeducted: true,
                     soldCounted: false,

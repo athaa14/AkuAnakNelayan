@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="id">
+<head>
+    <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Pengaturan Admin - AkuAnakNelayan</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css"><script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex min-h-screen flex-col bg-slate-50 font-sans text-slate-800" data-admin-active="admin-settings">
+    <main class="mx-auto w-full max-w-4xl flex-1 px-4 sm:px-6 lg:px-8">
+        <header class="mt-7 rounded-2xl bg-amber-50 px-5 py-7 sm:px-8">
+            <p class="text-xs font-bold uppercase tracking-[.16em] text-teal-700">Area admin</p>
+            <h1 class="mt-2 font-heading text-3xl font-extrabold text-slate-900">Pengaturan</h1>
+            <p class="mt-2 text-sm text-slate-600">Atur simulasi transaksi dan data awal marketplace.</p>
+        </header>
+        <section class="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+            <h2 class="font-heading text-lg font-extrabold text-slate-900">Akun admin</h2>
+            <dl id="adminProfile" class="mt-4 grid gap-3 text-sm sm:grid-cols-2"></dl>
+        </section>
+        <form id="settingsForm" class="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+            <h2 class="font-heading text-lg font-extrabold text-slate-900">Simulasi transaksi</h2>
+            <div class="mt-4 grid gap-4">
+                <label class="text-xs font-bold text-slate-600">Biaya pengiriman per toko (Rp)<input name="shippingCostPerStore" type="number" min="1" step="500" required class="mt-1 block min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm font-normal text-slate-800"></label>
+                <label class="flex items-start gap-3 rounded-xl border border-slate-200 p-4 text-sm"><input name="requireVerification" type="checkbox" class="mt-0.5 h-4 w-4 accent-teal-700"><span><strong class="block text-slate-900">Sembunyikan produk toko belum terverifikasi</strong><span class="mt-1 block text-xs text-slate-500">Jika aktif, produk dari toko yang belum diverifikasi tidak tampil di katalog pembeli.</span></span></label>
+            </div>
+            <div class="mt-6 flex flex-wrap items-center justify-between gap-3"><p class="text-xs text-slate-500">Pengaturan disimpan di LocalStorage browser ini.</p><button class="rounded-lg bg-teal-700 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-teal-800" type="submit">Simpan pengaturan</button></div>
+        </form>
+        <section class="mt-6 rounded-2xl border border-rose-200 bg-white p-5 shadow-sm sm:p-6">
+            <h2 class="font-heading text-lg font-extrabold text-slate-900">Reset data dummy</h2>
+            <p class="mt-1 text-sm text-slate-500">Mengembalikan seluruh produk, akun, pesanan, ulasan, kategori, konten, dan pengaturan ke data awal. Sesi login akan dihapus.</p>
+            <button id="resetData" class="mt-4 rounded-lg border border-rose-200 px-5 py-2.5 text-sm font-bold text-rose-700 transition hover:bg-rose-50">Reset semua data</button>
+        </section>
+    </main>
+    <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script><script src="assets/js/data.js"></script><script src="assets/js/storage.js"></script><script src="assets/js/auth.js"></script>
+    <script src="assets/js/shared.js"></script><script src="assets/js/admin-common.js"></script><script src="assets/js/admin-settings.js"></script>
+</body>
+</html>
