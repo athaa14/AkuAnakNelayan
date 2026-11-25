@@ -10,14 +10,35 @@ const formatDate = date => new Intl.DateTimeFormat("id-ID", {
     year: "numeric"
 }).format(new Date(date));
 
+const escapeHTML = value => String(value ?? "").replace(/[&<>"']/g, character => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+}[character]));
+
 const icon = (name, size = 18) => `<i data-lucide="${name}" style="width:${size}px;height:${size}px"></i>`;
 
 function getSeller(id) {
-    return Store.get("sellers", DATA.sellers).find(seller => seller.id === id) || DATA.sellers[0];
+    const seller = Store.get("sellers", DATA.sellers).find(item => item.id === id);
+    if (!seller) return DATA.sellers[0];
+    const totalProducts = Store.get("products", DATA.products).filter(product => product.sellerId === id && product.isPublished !== false).length;
+    return { ...seller, totalProducts };
 }
 
 function getProduct(id) {
-    return Store.get("products", DATA.products).find(product => product.id === Number(id));
+    return Store.get("products", DATA.products).find(product => product.id === Number(id) && product.isPublished !== false);
+}
+
+function getSellerProducts(sellerId = Auth.currentSeller()?.id) {
+    return Store.get("products", DATA.products).filter(product => product.sellerId === sellerId);
+}
+
+function getSellerOrders(sellerId = Auth.currentSeller()?.id) {
+    return Store.get("orders", makeDummyOrders())
+        .filter(order => order.sellerId === sellerId || order.products?.some(item => item.sellerId === sellerId))
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 }
 
 function wishlistIds() {
@@ -68,7 +89,7 @@ function addToCart(productId, quantity = 1, redirect = false) {
 function buyProductNow(productId) {
     const product = getProduct(productId);
     if (!product || product.stock <= 0) return toast("Produk sudah habis", "alert-circle");
-    if (!Auth.requireLogin()) return;
+    if (!Auth.requireBuyer()) return;
     Store.set("cart", [
         ...cartItems().filter(item => item.productId !== product.id),
         { productId: product.id, quantity: 1 }
@@ -85,6 +106,7 @@ function updateNavBadges() {
 function toast(message, iconName = "check-circle") {
     let element = document.querySelector(".toast");
     if (!element) {
+        // createElement builds the reusable toast notification in the DOM.
         element = document.createElement("div");
         element.className = "toast fixed bottom-5 right-5 z-[100] flex translate-y-4 items-center gap-2 rounded-xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white opacity-0 shadow-xl transition-all";
         document.body.appendChild(element);
@@ -102,8 +124,13 @@ function toast(message, iconName = "check-circle") {
 
 function renderNavbar(active = "") {
     const current = Auth.current();
+    const isSeller = current?.role === "seller";
     const activeClasses = "text-teal-700 after:absolute after:-bottom-7 after:left-0 after:h-0.5 after:w-full after:bg-teal-600";
-    const navItems = [
+    const navItems = isSeller ? [
+        ["seller-dashboard", "Dasbor", "seller-dashboard.html"],
+        ["seller-products", "Produk Saya", "seller-products.html"],
+        ["seller-orders", "Transaksi", "seller-orders.html"]
+    ] : [
         ["home", "Beranda", "index.html"],
         ["products", "Produk", "products.html"],
         ["orders", "Pesanan", "orders.html"],
@@ -113,7 +140,7 @@ function renderNavbar(active = "") {
         <a class="relative text-sm font-semibold transition hover:text-teal-700 ${active === key ? activeClasses : "text-slate-600"}" href="${href}">${label}</a>
     `).join("");
     const actions = current
-        ? `<a class="hidden h-10 w-10 place-items-center rounded-lg border border-slate-200 text-slate-700 transition hover:border-teal-600 hover:text-teal-700 sm:grid" href="profile.html" title="Profil">${icon("user-round", 18)}</a>`
+        ? `<a class="hidden h-10 w-10 place-items-center rounded-lg border border-slate-200 text-slate-700 transition hover:border-teal-600 hover:text-teal-700 sm:grid" href="${isSeller ? "seller-profile.html" : "profile.html"}" title="${isSeller ? "Profil toko" : "Profil"}">${icon("user-round", 18)}</a>`
         : `<a class="hidden rounded-lg bg-teal-700 px-4 py-2 text-sm font-bold text-white transition hover:bg-teal-800 sm:inline-flex" href="login.html">Masuk</a>`;
 
     document.body.insertAdjacentHTML("afterbegin", `
@@ -125,12 +152,12 @@ function renderNavbar(active = "") {
                 </a>
                 <nav id="navLinks" class="absolute left-0 right-0 top-[72px] hidden flex-col gap-5 border-b border-slate-200 bg-white p-5 shadow-lg md:static md:ml-auto md:flex md:flex-row md:items-center md:border-0 md:bg-transparent md:p-0 md:shadow-none">${navLinks}</nav>
                 <div class="ml-auto flex items-center gap-2 md:ml-0">
-                    <a class="relative hidden h-10 w-10 place-items-center rounded-lg border border-slate-200 text-slate-700 transition hover:border-teal-600 hover:text-teal-700 sm:grid" href="wishlist.html" title="Favorit">
+                    ${isSeller ? "" : `<a class="relative hidden h-10 w-10 place-items-center rounded-lg border border-slate-200 text-slate-700 transition hover:border-teal-600 hover:text-teal-700 sm:grid" href="wishlist.html" title="Favorit">
                         ${icon("heart", 18)}<span class="absolute -right-1.5 -top-1.5 grid h-[18px] min-w-[18px] place-items-center rounded-full border-2 border-white bg-rose-600 px-1 text-[10px] font-bold text-white" data-wishlist-count>0</span>
-                    </a>
-                    <a class="relative grid h-10 w-10 place-items-center rounded-lg border border-slate-200 text-slate-700 transition hover:border-teal-600 hover:text-teal-700" href="cart.html" title="Keranjang">
+                    </a>`}
+                    ${isSeller ? "" : `<a class="relative grid h-10 w-10 place-items-center rounded-lg border border-slate-200 text-slate-700 transition hover:border-teal-600 hover:text-teal-700" href="cart.html" title="Keranjang">
                         ${icon("shopping-cart", 18)}<span class="absolute -right-1.5 -top-1.5 grid h-[18px] min-w-[18px] place-items-center rounded-full border-2 border-white bg-rose-600 px-1 text-[10px] font-bold text-white" data-cart-count>0</span>
-                    </a>
+                    </a>`}
                     ${actions}
                     <button class="grid h-10 w-10 place-items-center rounded-lg border border-slate-200 text-slate-700 md:hidden" id="mobileToggle" aria-label="Buka menu">${icon("menu", 20)}</button>
                 </div>
@@ -139,12 +166,45 @@ function renderNavbar(active = "") {
     `);
 
     updateNavBadges();
+    // Click handling toggles the mobile navigation sidebar.
     document.querySelector("#mobileToggle")?.addEventListener("click", () => {
         const navLinks = document.querySelector("#navLinks");
         const isOpen = navLinks.classList.contains("hidden");
         navLinks.classList.toggle("hidden", !isOpen);
         navLinks.classList.toggle("flex", isOpen);
     });
+    if (window.lucide) lucide.createIcons();
+}
+
+function renderSellerNavbar(active = "") {
+    const seller = Auth.currentSeller();
+    const navItems = [
+        ["seller-dashboard", "Dasbor", "seller-dashboard.html"],
+        ["seller-products", "Produk Saya", "seller-products.html"],
+        ["seller-orders", "Transaksi", "seller-orders.html"],
+        ["seller-profile", "Profil Toko", "seller-profile.html"]
+    ];
+    const links = navItems.map(([key, label, href]) => `
+        <a class="whitespace-nowrap rounded-lg px-3 py-2 text-sm font-semibold transition ${key === active ? "bg-teal-50 text-teal-800" : "text-slate-600 hover:bg-slate-50 hover:text-teal-700"}" href="${href}">${label}</a>
+    `).join("");
+    document.body.insertAdjacentHTML("afterbegin", `
+        <header class="sticky top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur">
+            <div class="mx-auto flex min-h-[72px] max-w-7xl flex-wrap items-center gap-3 px-4 py-3 sm:px-6 lg:px-8">
+                <a class="flex shrink-0 items-center gap-3 text-slate-900" href="seller-dashboard.html">
+                    <span class="grid h-10 w-10 place-items-center rounded-xl bg-slate-900 text-white">${icon("waves", 23)}</span>
+                    <span class="font-heading text-base font-extrabold leading-tight">AkuAnakNelayan<small class="mt-1 block font-sans text-[9px] font-bold tracking-[.16em] text-teal-700">AREA PENJUAL</small></span>
+                </a>
+                <nav class="order-3 flex w-full gap-1 overflow-x-auto border-t border-slate-100 pt-2 md:order-2 md:ml-auto md:w-auto md:border-0 md:pt-0">${links}</nav>
+                <div class="ml-auto flex items-center gap-2 md:order-3">
+                    <span class="hidden max-w-40 truncate text-right text-xs font-semibold text-slate-600 lg:block">${seller?.shopName || ""}</span>
+                    <a class="rounded-lg border border-slate-200 px-3 py-2 text-xs font-bold text-slate-700 transition hover:border-teal-700 hover:text-teal-700" href="index.html">Lihat marketplace</a>
+                    <button class="rounded-lg px-3 py-2 text-xs font-bold text-slate-500 transition hover:bg-slate-100 hover:text-slate-900" id="sellerLogout">Keluar</button>
+                </div>
+            </div>
+        </header>
+    `);
+    // Logout button clears the active session through the shared auth helper.
+    document.querySelector("#sellerLogout").addEventListener("click", () => Auth.logout());
     if (window.lucide) lucide.createIcons();
 }
 
@@ -173,18 +233,19 @@ function productCard(product) {
     const seller = getSeller(product.sellerId);
     const isWishlisted = wishlistIds().includes(product.id);
     const soldOut = product.stock <= 0;
+    // Product card buttons use inline onclick handlers for cart and wishlist actions.
     return `
         <article class="group overflow-hidden rounded-2xl border shadow-sm transition ${soldOut ? "border-slate-300 bg-slate-100" : "border-slate-200 bg-white hover:-translate-y-1 hover:shadow-lg"}">
             <div class="relative aspect-[4/3] overflow-hidden bg-slate-100">
-                <a href="product-detail.html?id=${product.id}"><img class="h-full w-full object-cover transition duration-300 ${soldOut ? "grayscale opacity-60" : "group-hover:scale-105"}" src="${product.image}" alt="${product.name}" loading="lazy"></a>
+                <a href="product-detail.html?id=${product.id}"><img class="h-full w-full object-cover transition duration-300 ${soldOut ? "grayscale opacity-60" : "group-hover:scale-105"}" src="${escapeHTML(product.image)}" alt="${escapeHTML(product.name)}" loading="lazy"></a>
                 <button class="absolute right-3 top-3 grid h-10 w-10 place-items-center rounded-full bg-white text-slate-500 shadow transition hover:text-rose-600 ${isWishlisted ? "text-rose-600 fill-rose-600" : ""}" data-wishlist="${product.id}" aria-pressed="${isWishlisted}" onclick="toggleWishlist(${product.id})" aria-label="Favorit">${icon("heart", 18)}</button>
                 <span class="absolute bottom-3 left-3 rounded-full ${soldOut ? "bg-slate-600" : "bg-slate-900/90"} px-3 py-1.5 text-xs font-bold text-white">${soldOut ? "Stok habis" : `${product.stock} ${product.stockUnit} tersedia`}</span>
             </div>
             <div class="p-4 ${soldOut ? "bg-slate-100" : "bg-white"}">
-                <div class="flex items-center justify-between gap-2 text-xs"><span class="font-bold ${soldOut ? "text-slate-500" : "text-teal-700"}">${product.freshness}</span><span class="text-slate-500">${formatDate(product.catchDate)}</span></div>
-                <a class="mt-2 block font-heading text-base font-bold ${soldOut ? "text-slate-500" : "text-slate-900 hover:text-teal-700"}" href="product-detail.html?id=${product.id}">${product.name}</a>
+                <div class="flex items-center justify-between gap-2 text-xs"><span class="font-bold ${soldOut ? "text-slate-500" : "text-teal-700"}">${escapeHTML(product.freshness)}</span><span class="text-slate-500">${formatDate(product.catchDate)}</span></div>
+                <a class="mt-2 block font-heading text-base font-bold ${soldOut ? "text-slate-500" : "text-slate-900 hover:text-teal-700"}" href="product-detail.html?id=${product.id}">${escapeHTML(product.name)}</a>
                 <div class="mt-2 text-lg font-extrabold ${soldOut ? "text-slate-500" : "text-slate-900"}">${formatRupiah(product.price)} <span class="text-xs font-medium text-slate-500">/kg</span></div>
-                <div class="mt-2 flex items-center gap-1 text-xs text-slate-500">${icon("map-pin", 13)} ${seller.location}</div>
+                <div class="mt-2 flex items-center gap-1 text-xs text-slate-500">${icon("map-pin", 13)} ${escapeHTML(seller.location)}</div>
                 <div class="mt-4 flex items-center gap-1 border-t border-slate-200 pt-3 text-xs font-bold ${soldOut ? "text-slate-500" : "text-amber-600"}">${icon("star", 14)} ${product.rating} <span class="ml-1 font-medium text-slate-500">${product.sold} terjual</span></div>
                 <div class="mt-3 grid grid-cols-2 gap-2">
                     <button class="inline-flex items-center justify-center gap-1.5 rounded-lg border px-2 py-2.5 text-xs font-bold transition ${soldOut ? "cursor-not-allowed border-slate-200 bg-slate-200 text-slate-400" : "border-slate-300 bg-white text-slate-700 hover:border-teal-700 hover:text-teal-700"}" onclick="addToCart(${product.id})" ${soldOut ? "disabled" : ""}>${icon("shopping-cart", 15)}Keranjang</button>

@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="id">
+<head>
+    <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Transaksi Penjual - AkuAnakNelayan</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css"><script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex min-h-screen flex-col bg-slate-50 font-sans text-slate-800" data-seller-active="seller-orders">
+    <main class="mx-auto w-full max-w-7xl flex-1 px-4 sm:px-6 lg:px-8">
+        <header class="mt-7 rounded-2xl bg-amber-50 px-5 py-7 sm:px-8"><p class="text-xs font-bold uppercase tracking-[.16em] text-teal-700">Pesanan toko</p><h1 class="mt-2 font-heading text-3xl font-extrabold text-slate-900">Transaksi</h1><p class="mt-2 text-sm text-slate-600">Periksa pesanan dan proses sesuai tahap pengiriman.</p></header>
+        <section class="mb-10 mt-6 rounded-2xl border border-slate-200 bg-white shadow-sm">
+            <div class="flex flex-col gap-3 border-b border-slate-100 p-5 sm:flex-row sm:items-center sm:px-6">
+                <label class="relative flex-1"><span class="sr-only">Cari nomor pesanan atau pembeli</span><input id="orderSearch" class="min-h-11 w-full rounded-lg border border-slate-200 px-3 pl-10 text-sm outline-none focus:border-teal-700" placeholder="Cari nomor pesanan atau pembeli"><span class="absolute left-3 top-3 text-slate-400" data-lucide="search"></span></label>
+                <label class="text-xs font-bold text-slate-600">Status
+                    <select id="orderFilter" class="ml-2 min-h-11 rounded-lg border border-slate-200 bg-white px-3 text-sm font-medium"><option value="Semua">Semua</option><option>Belum Dibayar</option><option>Dikemas</option><option>Dikirim</option><option>Dalam Perjalanan</option><option>Selesai</option><option>Dibatalkan</option></select>
+                </label>
+            </div>
+            <div class="overflow-x-auto"><table class="w-full min-w-[800px] text-left text-sm"><thead class="bg-slate-50 text-xs uppercase tracking-wide text-slate-500"><tr><th class="px-5 py-3">Pesanan</th><th class="px-5 py-3">Tanggal</th><th class="px-5 py-3">Pembeli</th><th class="px-5 py-3">Produk</th><th class="px-5 py-3">Nilai toko</th><th class="px-5 py-3">Status</th><th class="px-5 py-3"></th></tr></thead><tbody id="sellerOrderRows" class="divide-y divide-slate-100"></tbody></table></div>
+            <div id="ordersEmpty" class="hidden px-6 py-16 text-center"><h2 class="font-heading text-lg font-bold text-slate-900">Transaksi belum tersedia</h2><p class="mt-2 text-sm text-slate-500">Pesanan yang sesuai filter akan tampil di sini.</p></div>
+        </section>
+    </main>
+    <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script><script src="assets/js/data.js"></script><script src="assets/js/storage.js"></script><script src="assets/js/auth.js"></script>
+    <script src="assets/js/shared.js"></script><script src="assets/js/seller-common.js"></script><script src="assets/js/seller-orders.js"></script>
+</body>
+</html>

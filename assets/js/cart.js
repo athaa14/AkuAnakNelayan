@@ -5,12 +5,14 @@ function renderCart() {
     const cart = cartItems();
     const valid = cart.map(item => ({ item, product: getProduct(item.productId) })).filter(entry => entry.product);
     let subtotal = 0;
+    const sellerIds = new Set(valid.map(({ product }) => product.sellerId));
+    const shippingCost = sellerIds.size * 10000;
     document.querySelector("#cartItems").innerHTML = valid.map(({ item, product }) => {
         subtotal += product.price * item.quantity;
         return `
             <article class="grid grid-cols-[76px_1fr] items-center gap-4 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm sm:grid-cols-[100px_1fr_auto] sm:p-4">
-                <img class="h-[76px] w-[76px] rounded-xl object-cover sm:h-24 sm:w-24" src="${product.image}" alt="${product.name}">
-                <div><h2 class="font-heading font-bold text-slate-900">${product.name}</h2><p class="mt-1 text-sm font-bold text-teal-700">${formatRupiah(product.price)} <span class="font-normal text-slate-500">/kg</span></p>
+                <img class="h-[76px] w-[76px] rounded-xl object-cover sm:h-24 sm:w-24" src="${escapeHTML(product.image)}" alt="${escapeHTML(product.name)}">
+                <div><h2 class="font-heading font-bold text-slate-900">${escapeHTML(product.name)}</h2><p class="mt-1 text-sm font-bold text-teal-700">${formatRupiah(product.price)} <span class="font-normal text-slate-500">/kg</span></p>
                     <div class="mt-3 inline-flex h-9 items-center rounded-lg border border-slate-200">
                         <button class="h-full w-9 text-slate-600 hover:text-teal-700" onclick="changeCartQty(${product.id},-1)" aria-label="Kurangi jumlah">−</button><span class="w-8 text-center text-sm">${item.quantity}</span><button class="h-full w-9 text-slate-600 hover:text-teal-700" onclick="changeCartQty(${product.id},1)" aria-label="Tambah jumlah">+</button>
                     </div>
@@ -25,7 +27,8 @@ function renderCart() {
     document.querySelector("#cartLayout").classList.toggle("hidden", !valid.length);
     document.querySelector("#cartEmpty").classList.toggle("hidden", Boolean(valid.length));
     document.querySelector("#cartSubtotal").textContent = formatRupiah(subtotal);
-    document.querySelector("#cartTotal").textContent = formatRupiah(subtotal + 10000);
+    document.querySelector("#cartShipping").textContent = formatRupiah(shippingCost);
+    document.querySelector("#cartTotal").textContent = formatRupiah(subtotal + shippingCost);
     updateNavBadges();
     if (window.lucide) lucide.createIcons();
 }
@@ -52,6 +55,6 @@ function removeCart(id) {
 }
 
 document.querySelector("#checkoutBtn").addEventListener("click", () => {
-    if (Auth.requireLogin()) location.href = "checkout.html";
+    if (Auth.requireBuyer()) location.href = "checkout.html";
 });
 renderCart();

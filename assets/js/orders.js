@@ -1,4 +1,4 @@
-if (Auth.requireLogin()) {
+if (Auth.requireBuyer()) {
     renderNavbar("orders");
     renderFooter();
 
@@ -17,7 +17,7 @@ if (Auth.requireLogin()) {
         });
 
         const current = Auth.current();
-        const all = Store.get("orders", makeDummyOrders()).filter(order => order.userId === current.id || current.id === 1);
+        const all = Store.get("orders", makeDummyOrders()).filter(order => order.userId === current.id);
         const list = all.filter(order => active === "Semua" || order.status === active);
         document.querySelector("#ordersList").innerHTML = list.length ? list.map(order => {
             const product = getProduct(order.products[0].productId);
@@ -33,8 +33,8 @@ if (Auth.requireLogin()) {
                         <span class="w-fit rounded-full px-3 py-1 text-xs font-bold ${statusClass}">${order.status}</span>
                     </div>
                     <div class="flex flex-col gap-4 p-5 sm:flex-row sm:items-center">
-                        <img class="h-16 w-16 rounded-xl object-cover" src="${product?.image || ""}" alt="${order.products[0].name}">
-                        <div class="min-w-0 flex-1"><strong class="text-sm text-slate-900">${order.products.map(item => item.name).join(", ")}</strong><p class="mt-1 text-xs text-slate-500">${order.products.reduce((sum, item) => sum + item.quantity, 0)} barang · ${order.paymentMethod}</p></div>
+                        <img class="h-16 w-16 rounded-xl object-cover" src="${escapeHTML(product?.image || "")}" alt="${escapeHTML(order.products[0].name)}">
+                        <div class="min-w-0 flex-1"><strong class="text-sm text-slate-900">${order.products.map(item => escapeHTML(item.name)).join(", ")}</strong><p class="mt-1 text-xs text-slate-500">${order.products.reduce((sum, item) => sum + item.quantity, 0)} barang · ${escapeHTML(order.paymentMethod)}</p></div>
                         <div class="flex items-center justify-between gap-4 sm:block sm:text-right"><div><span class="block text-xs text-slate-500">Total</span><strong class="text-sm text-slate-900">${formatRupiah(order.total)}</strong></div><a class="rounded-lg border border-slate-300 px-3 py-2 text-xs font-bold text-slate-900 hover:border-teal-700 hover:text-teal-700 sm:mt-2 sm:inline-block" href="order-detail.html?id=${order.id}">Lihat Detail</a></div>
                     </div>
                 </article>`;

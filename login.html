@@ -13,9 +13,15 @@
         <div class="grid place-items-center px-5 py-12 sm:px-10">
             <form class="w-full max-w-md" id="authForm" data-auth-mode="login">
                 <a class="font-heading text-lg font-extrabold text-slate-900" href="index.html">Laut <span class="text-teal-700">Pangandaran</span></a>
-                <h1 class="mt-10 font-heading text-3xl font-extrabold text-slate-900">Selamat datang</h1><p class="mt-2 text-sm text-slate-500">Masuk untuk mengelola belanja dan pesanan Anda.</p>
-                <label class="mt-7 block text-xs font-bold text-slate-600">Email<input class="mt-1.5 min-h-12 w-full rounded-lg border border-slate-200 px-3 text-sm font-normal" name="email" type="email" value="andi@example.com" required></label>
-                <label class="mt-4 block text-xs font-bold text-slate-600">Password<input class="mt-1.5 min-h-12 w-full rounded-lg border border-slate-200 px-3 text-sm font-normal" name="password" type="password" placeholder="Minimal 4 karakter" required></label>
+                <h1 class="mt-10 font-heading text-3xl font-extrabold text-slate-900">Selamat datang</h1><p class="mt-2 text-sm text-slate-500">Masuk untuk mengelola belanja atau toko Anda.</p>
+                <label class="mt-6 block text-xs font-bold text-slate-600">Email<input class="mt-1.5 min-h-12 w-full rounded-lg border border-slate-200 px-3 text-sm font-normal" name="email" type="email" autocomplete="email" required></label>
+                <label class="mt-4 block text-xs font-bold text-slate-600">Password
+                    <span class="relative mt-1.5 block">
+                        <input class="min-h-12 w-full rounded-lg border border-slate-200 px-3 pr-24 text-sm font-normal" id="password" name="password" type="password" autocomplete="current-password" minlength="4" placeholder="Minimal 4 karakter" required>
+                        <button class="absolute inset-y-0 right-2 px-2 text-xs font-bold text-slate-500 hover:text-teal-700" type="button" onclick="togglePasswordVisibility('password', this)" aria-pressed="false">Tampilkan</button>
+                    </span>
+                </label>
+                <p class="mt-3 rounded-lg bg-slate-50 p-3 text-xs leading-5 text-slate-600">Akun demo penjual: <strong>nelayan@example.com</strong> · kata sandi simulasi minimal 4 karakter.</p>
                 <p class="mt-2 min-h-5 text-sm font-medium text-rose-600" id="authError" role="alert"></p>
                 <button class="mt-3 w-full rounded-lg bg-teal-700 px-5 py-3 font-bold text-white hover:bg-teal-800" type="submit">Masuk</button>
                 <p class="mt-6 text-center text-sm text-slate-500">Belum punya akun? <a class="font-bold text-teal-700 hover:text-teal-900" href="register.html">Daftar sekarang</a></p>

@@ -1,10 +1,13 @@
-if (Auth.requireLogin()) {
+if (Auth.requireBuyer()) {
     renderNavbar("orders");
     renderFooter();
 
     const id = new URLSearchParams(location.search).get("id");
     const orders = Store.get("orders", makeDummyOrders());
-    const order = orders.find(item => item.id === id) || orders[0];
+    const order = orders.find(item => item.id === id && item.userId === Auth.current().id);
+    if (!order) {
+        location.replace("orders.html");
+    } else {
     const stages = [
         "Pesanan dibuat",
         "Pembayaran dikonfirmasi",
@@ -43,38 +46,57 @@ if (Auth.requireLogin()) {
             }).join("");
 
         document.querySelector("#orderItems").innerHTML = order.products.map(item => `
-            <div class="flex justify-between gap-4 py-3 text-sm"><span class="text-slate-600">${item.name} × ${item.quantity}</span><strong class="shrink-0 text-slate-900">${formatRupiah(item.subtotal)}</strong></div>
+            <div class="flex justify-between gap-4 py-3 text-sm"><span class="text-slate-600">${escapeHTML(item.name)} × ${item.quantity}</span><strong class="shrink-0 text-slate-900">${formatRupiah(item.subtotal)}</strong></div>
         `).join("");
         document.querySelector("#reviewCard").classList.toggle("hidden", order.status !== "Selesai");
 
         const actions = document.querySelector("#orderActions");
         actions.innerHTML = "";
         if (order.status === "Belum Dibayar") {
-            actions.innerHTML = `<button class="rounded-lg bg-teal-700 px-4 py-3 text-sm font-bold text-white hover:bg-teal-800" id="advanceStatus">Konfirmasi Pembayaran</button><button class="rounded-lg border border-rose-200 px-4 py-3 text-sm font-bold text-rose-700 hover:bg-rose-50" id="cancelOrder">Batalkan Pesanan</button>`;
+            actions.innerHTML = `<button class="rounded-lg bg-teal-700 px-4 py-3 text-sm font-bold text-white hover:bg-teal-800" id="confirmPayment">Konfirmasi Pembayaran</button><button class="rounded-lg border border-rose-200 px-4 py-3 text-sm font-bold text-rose-700 hover:bg-rose-50" id="cancelOrder">Batalkan Pesanan</button>`;
             document.querySelector("#cancelOrder").addEventListener("click", () => {
                 order.status = "Dibatalkan";
                 order.history.push({ status: "Pesanan dibatalkan", time: new Date().toISOString() });
+                if (order.stockDeducted) {
+                    const products = Store.get("products", DATA.products);
+                    order.products.forEach(item => {
+                        const product = products.find(entry => entry.id === item.productId);
+                        if (product) {
+                            product.stock += item.quantity;
+                            if (order.soldCounted) product.sold = Math.max(0, Number(product.sold || 0) - item.quantity);
+                            product.isAvailable = product.stock > 0;
+                        }
+                    });
+                    Store.set("products", products);
+                    order.stockDeducted = false;
+                }
                 save();
                 renderDetail();
                 toast("Pesanan dibatalkan");
             });
-        } else if (order.status !== "Selesai" && !cancelled) {
-            actions.innerHTML = `<button class="rounded-lg bg-teal-700 px-4 py-3 text-sm font-bold text-white hover:bg-teal-800" id="advanceStatus">Lanjutkan Status</button>`;
+            document.querySelector("#confirmPayment").addEventListener("click", confirmPayment);
         }
-        document.querySelector("#advanceStatus")?.addEventListener("click", advance);
         if (window.lucide) lucide.createIcons();
     }
 
-    function advance() {
-        const flow = ["Belum Dibayar", "Dikemas", "Dikirim", "Dalam Perjalanan", "Selesai"];
-        const index = flow.indexOf(order.status);
-        if (index >= 0 && index < flow.length - 1) {
-            order.status = flow[index + 1];
-            order.history.push({ status: order.status, time: new Date().toISOString() });
-            save();
-            renderDetail();
-            toast("Status pesanan diperbarui");
-        }
+    function confirmPayment() {
+        if (order.status !== "Belum Dibayar") return;
+        const now = new Date().toISOString();
+        order.status = "Dikemas";
+        const products = Store.get("products", DATA.products);
+        order.products.forEach(item => {
+            const product = products.find(entry => entry.id === item.productId);
+            if (product) product.sold = Number(product.sold || 0) + item.quantity;
+        });
+        Store.set("products", products);
+        order.soldCounted = true;
+        order.history.push(
+            { status: "Pembayaran dikonfirmasi", time: now },
+            { status: "Pesanan dikemas", time: now }
+        );
+        save();
+        renderDetail();
+        toast("Pembayaran simulasi dikonfirmasi");
     }
 
     function save() {
@@ -104,4 +126,5 @@ if (Auth.requireLogin()) {
     });
 
     renderDetail();
+    }
 }

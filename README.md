@@ -17,7 +17,17 @@ Kemudian buka `http://localhost:5500`.
 - Email: `andi@example.com`
 - Password: minimal 4 karakter, misalnya `1234`
 
-Akun baru juga dapat dibuat melalui halaman daftar.
+Akun baru dapat dibuat melalui `register.html` dan otomatis mendapat role Buyer. Untuk membuka formulir yang sama sebagai jalur pendaftaran penjual, pilih **Daftar sebagai Penjual**; formulir akan meminta nama dan deskripsi toko.
+
+Login menggunakan satu halaman dan mengarahkan Buyer ke marketplace atau Seller ke dashboard penjual. Dashboard Admin belum tersedia dan role Admin ditunda.
+
+### Akun Demo Penjual
+
+- Email: `nelayan@example.com`
+- Peran: Penjual
+- Password simulasi: karakter apa pun dengan panjang minimal 4, misalnya `1234`
+
+Password tidak disimpan atau diverifikasi terhadap kredensial asli. Autentikasi hanya simulasi frontend.
 
 ## Fitur
 
@@ -25,7 +35,9 @@ Akun baru juga dapat dibuat melalui halaman daftar.
 - Detail produk, galeri dokumentasi, penjual, stok, dan ulasan
 - Keranjang, checkout, pengurangan stok, wishlist, profil, dan pesanan
 - Tracking status pesanan dengan alur yang terkontrol
+- Portal penjual untuk ringkasan penjualan, inventaris, transaksi, dan profil toko
 - Penyimpanan data di LocalStorage dan reset data melalui Profil
+- Validasi form, tombol tampilkan password, pencarian/filter, serta interaksi DOM dan event untuk tugas kuliah
 
 ## Struktur
 

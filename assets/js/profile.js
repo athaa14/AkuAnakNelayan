@@ -1,4 +1,4 @@
-if (Auth.requireLogin()) {
+if (Auth.requireBuyer()) {
     renderNavbar("");
     renderFooter();
 

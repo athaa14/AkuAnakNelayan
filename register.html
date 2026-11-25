@@ -13,17 +13,33 @@
         <div class="grid place-items-center px-5 py-10 sm:px-10">
             <form class="w-full max-w-md" id="authForm" data-auth-mode="register">
                 <a class="font-heading text-lg font-extrabold text-slate-900" href="index.html">Laut <span class="text-teal-700">Pangandaran</span></a>
-                <h1 class="mt-7 font-heading text-3xl font-extrabold text-slate-900">Buat akun baru</h1><p class="mt-2 text-sm text-slate-500">Daftar untuk mulai membeli hasil laut segar.</p>
+                <h1 class="mt-7 font-heading text-3xl font-extrabold text-slate-900" id="authHeading">Buat akun pembeli</h1><p class="mt-2 text-sm text-slate-500" id="authDescription">Daftar untuk mulai berbelanja hasil laut Pangandaran.</p>
                 <div class="mt-6 grid gap-3 sm:grid-cols-2">
                     <label class="text-xs font-bold text-slate-600 sm:col-span-2">Nama lengkap<input class="mt-1.5 min-h-11 w-full rounded-lg border border-slate-200 px-3 text-sm font-normal" name="name" placeholder="Nama lengkap" required></label>
-                    <label class="text-xs font-bold text-slate-600 sm:col-span-2">Email<input class="mt-1.5 min-h-11 w-full rounded-lg border border-slate-200 px-3 text-sm font-normal" name="email" type="email" placeholder="nama@email.com" required></label>
-                    <label class="text-xs font-bold text-slate-600">Nomor telepon<input class="mt-1.5 min-h-11 w-full rounded-lg border border-slate-200 px-3 text-sm font-normal" name="phone" placeholder="0812..." required></label>
-                    <label class="text-xs font-bold text-slate-600">Alamat<input class="mt-1.5 min-h-11 w-full rounded-lg border border-slate-200 px-3 text-sm font-normal" name="address" placeholder="Alamat pengiriman" required></label>
-                    <label class="text-xs font-bold text-slate-600">Password<input class="mt-1.5 min-h-11 w-full rounded-lg border border-slate-200 px-3 text-sm font-normal" name="password" type="password" placeholder="Minimal 4 karakter" required></label>
-                    <label class="text-xs font-bold text-slate-600">Konfirmasi password<input class="mt-1.5 min-h-11 w-full rounded-lg border border-slate-200 px-3 text-sm font-normal" name="confirm" type="password" placeholder="Ulangi password" required></label>
+                    <label class="text-xs font-bold text-slate-600 sm:col-span-2">Email<input class="mt-1.5 min-h-11 w-full rounded-lg border border-slate-200 px-3 text-sm font-normal" name="email" type="email" autocomplete="email" placeholder="nama@email.com" required></label>
+                    <label class="text-xs font-bold text-slate-600">Nomor telepon<input class="mt-1.5 min-h-11 w-full rounded-lg border border-slate-200 px-3 text-sm font-normal" name="phone" type="tel" autocomplete="tel" inputmode="tel" minlength="8" maxlength="20" placeholder="0812..." required></label>
+                    <label class="text-xs font-bold text-slate-600">Alamat<input class="mt-1.5 min-h-11 w-full rounded-lg border border-slate-200 px-3 text-sm font-normal" name="address" placeholder="Alamat pengiriman / domisili" required></label>
+                    <div class="hidden gap-3 sm:col-span-2 sm:grid-cols-2" id="sellerFields">
+                        <label class="text-xs font-bold text-slate-600 sm:col-span-2">Nama toko<input class="mt-1.5 min-h-11 w-full rounded-lg border border-slate-200 px-3 text-sm font-normal" name="shopName" maxlength="80" placeholder="Contoh: Nelayan Bahari"></label>
+                        <label class="text-xs font-bold text-slate-600 sm:col-span-2">Deskripsi toko<textarea class="mt-1.5 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm font-normal" name="description" rows="3" minlength="10" maxlength="400" placeholder="Ceritakan hasil tangkapan dan layanan toko" required></textarea></label>
+                        <label class="text-xs font-bold text-slate-600 sm:col-span-2">Lokasi toko<input class="mt-1.5 min-h-11 w-full rounded-lg border border-slate-200 px-3 text-sm font-normal" name="location" maxlength="120" placeholder="Contoh: Pangandaran"></label>
+                    </div>
+                    <label class="text-xs font-bold text-slate-600">Password
+                        <span class="relative mt-1.5 block">
+                            <input class="min-h-11 w-full rounded-lg border border-slate-200 px-3 pr-24 text-sm font-normal" id="password" name="password" type="password" autocomplete="new-password" minlength="4" placeholder="Minimal 4 karakter" required>
+                            <button class="absolute inset-y-0 right-2 px-2 text-xs font-bold text-slate-500 hover:text-teal-700" type="button" onclick="togglePasswordVisibility('password', this)" aria-pressed="false">Tampilkan</button>
+                        </span>
+                    </label>
+                    <label class="text-xs font-bold text-slate-600">Konfirmasi password
+                        <span class="relative mt-1.5 block">
+                            <input class="min-h-11 w-full rounded-lg border border-slate-200 px-3 pr-24 text-sm font-normal" id="confirmPassword" name="confirm" type="password" autocomplete="new-password" minlength="4" placeholder="Ulangi password" required>
+                            <button class="absolute inset-y-0 right-2 px-2 text-xs font-bold text-slate-500 hover:text-teal-700" type="button" onclick="togglePasswordVisibility('confirmPassword', this)" aria-pressed="false">Tampilkan</button>
+                        </span>
+                    </label>
                 </div>
                 <p class="mt-2 min-h-5 text-sm font-medium text-rose-600" id="authError" role="alert"></p>
-                <button class="mt-2 w-full rounded-lg bg-teal-700 px-5 py-3 font-bold text-white hover:bg-teal-800" type="submit">Daftar Sekarang</button>
+                <button class="mt-2 w-full rounded-lg bg-teal-700 px-5 py-3 font-bold text-white hover:bg-teal-800" type="submit" id="registerButton">Daftar sebagai Pembeli</button>
+                <a class="mt-3 block w-full rounded-lg border border-teal-700 px-5 py-3 text-center font-bold text-teal-800 transition hover:bg-teal-50" href="register.html?role=seller" id="sellerRegisterLink">Daftar sebagai Penjual</a>
                 <p class="mt-5 text-center text-sm text-slate-500">Sudah punya akun? <a class="font-bold text-teal-700 hover:text-teal-900" href="login.html">Masuk</a></p>
             </form>
         </div>

@@ -67,14 +67,14 @@ Website menggunakan konsep marketplace modern yang tetap memiliki identitas daer
 
 **Warna utama:**
 
-| Warna      | Kode    | Penggunaan                |
-| ---------- | ------- | ------------------------- |
-| Ocean Navy | #153B50 | Warna utama dan navbar    |
-| Deep Teal  | #247B80 | Tombol dan elemen penting |
-| Seafoam    | #DCECE7 | Background pendukung      |
-| Warm Sand  | #F3EFE6 | Background alternatif     |
-| White      | #FFFFFF | Card dan background       |
-| Charcoal   | #252D32 | Teks utama                |
+| Warna            | Kode    | Penggunaan                         |
+| ---------------- | ------- | ---------------------------------- |
+| Teal utama       | #0F766E | Tombol dan elemen penting          |
+| Teal hover       | #115E59 | Hover tombol utama                 |
+| Latar slate muda | #F8FAFC | Latar halaman                      |
+| Putih            | #FFFFFF | Card dan form                      |
+| Teks utama       | #1E293B | Heading dan teks utama             |
+| Amber muda       | #FFFBEB | Highlight kontekstual seperti hero |
 
 **Typography:**
 
@@ -106,9 +106,7 @@ Kebutuhan pembeli:
 
 **B. Penjual (Seller)**
 
-Penjual merupakan nelayan atau pihak yang memasarkan hasil tangkapan melalui marketplace.
-
-Dalam versi frontend ini, informasi penjual ditampilkan menggunakan data dummy. Pengelolaan produk penjual belum terhubung ke sistem backend.
+Penjual merupakan nelayan atau pihak yang memasarkan hasil tangkapan melalui marketplace. Penjual dapat mengelola tokonya sendiri melalui portal penjual. Produk yang dikelola tetap menggunakan data produk bersama yang tampil di marketplace pembeli.
 
 Informasi penjual:
 
@@ -118,6 +116,15 @@ Informasi penjual:
 - Rating toko.
 - Jumlah produk.
 - Deskripsi toko.
+- Informasi kontak dan foto profil toko.
+
+Kebutuhan penjual:
+
+- Melihat ringkasan penjualan dan pesanan yang perlu ditangani.
+- Mengelola produk dan stok milik tokonya.
+- Melihat detail dan memperbarui status pesanan sesuai alurnya.
+- Mengubah informasi profil toko.
+- Melihat data penjualan simulasi per periode.
 
 **C. Administrator**
 
@@ -142,6 +149,15 @@ Website memiliki halaman-halaman berikut:
 | 9   | Profil Pengguna | profile.html        |
 | 10  | Login           | login.html          |
 | 11  | Register        | register.html       |
+| 12  | Dashboard Penjual | seller-dashboard.html |
+| 13  | Produk Penjual | seller-products.html |
+| 14  | Detail Produk Penjual | seller-product-detail.html |
+| 15  | Form Produk | seller-product-form.html |
+| 16  | Transaksi Penjual | seller-orders.html |
+| 17  | Detail Transaksi Penjual | seller-order-detail.html |
+| 18  | Profil Toko | seller-profile.html |
+
+Login menggunakan satu halaman tanpa pilihan peran dan mengarahkan pengguna berdasarkan role akun. Register biasa otomatis membuat akun pembeli; tautan **Daftar sebagai Penjual** membuka formulir yang sama dengan tambahan informasi awal toko. Dashboard Admin belum tersedia pada implementasi saat ini.
 
 Halaman tambahan yang dapat dikembangkan:
 
@@ -393,10 +409,10 @@ Informasi yang ditampilkan:
 Ketika pembeli melakukan konfirmasi:
 
 1. Sistem memvalidasi data.
-2. Sistem membuat ID pesanan.
-3. Pesanan disimpan ke LocalStorage.
-4. Status awal pesanan menjadi Belum Dibayar.
-5. Pembeli diarahkan ke halaman detail pesanan.
+2. Sistem mengelompokkan item keranjang berdasarkan toko dan membuat satu transaksi/ID pesanan per toko.
+3. Setiap transaksi disimpan ke LocalStorage dengan status awal Belum Dibayar.
+4. Biaya pengiriman dihitung per transaksi/toko.
+5. Pembeli diarahkan ke halaman detail transaksi pertama dan dapat melihat transaksi lain yang terbentuk.
 
 Catatan: Tidak ada pembayaran uang sungguhan atau integrasi payment gateway.
 
@@ -494,10 +510,11 @@ Fitur:
 
 Komponen:
 
-- Email atau username.
-- Password.
+- Email.
+- Password dengan tombol tampil/sembunyikan.
 - Tombol Login.
 - Link Register.
+- Tidak ada pilihan jenis akun; dashboard tujuan ditentukan dari role akun.
 
 Validasi:
 
@@ -511,12 +528,9 @@ Login hanya merupakan simulasi frontend. Jangan menyimpan password asli atau inf
 
 Komponen:
 
-- Nama lengkap.
-- Email.
-- Nomor telepon.
-- Password.
-- Konfirmasi password.
-- Tombol Register.
+- Nama lengkap, email, nomor telepon, alamat, password, dan konfirmasi password.
+- Tombol **Daftar sebagai Pembeli** untuk registrasi buyer biasa.
+- Tautan **Daftar sebagai Penjual** yang membuka mode pendaftaran seller pada halaman yang sama; mode tersebut menambahkan nama toko, deskripsi, dan lokasi toko.
 - Link Login.
 
 Validasi:
@@ -524,7 +538,74 @@ Validasi:
 - Semua input wajib diisi.
 - Email tidak boleh digunakan oleh akun lain.
 - Password dan konfirmasi password harus sama.
+- Role buyer ditetapkan otomatis untuk registrasi biasa; role seller hanya diberikan melalui jalur pendaftaran penjual.
+- Semua field wajib diisi, format email dan nomor telepon divalidasi, password minimal 4 karakter, dan konfirmasi harus sama.
+- Jika mendaftar sebagai penjual, pengguna wajib mengisi nama, deskripsi, dan lokasi toko.
 - Data akun disimpan sebagai data simulasi tanpa password asli.
+
+#### **7.12 Portal Penjual**
+
+Portal penjual adalah area kerja yang terpisah dari navigasi pembeli, tetapi tetap menggunakan sistem desain dan sumber data produk yang sama. Semua daftar, statistik, dan tindakan penjual harus dibatasi ke toko milik akun yang sedang masuk.
+
+##### **7.12.1 Dashboard Penjual**
+
+Dashboard menjadi halaman awal setelah penjual masuk. Tampilkan ringkasan yang berguna untuk operasional harian, bukan sekadar dekorasi:
+
+- Kartu ringkasan: omzet periode berjalan, jumlah pesanan aktif, produk aktif, dan produk stok menipis.
+- Pemilih rentang waktu yang jelas, minimal 7 hari dan 30 hari. Perubahan rentang memperbarui statistik.
+- Grafik penjualan sederhana dengan label tanggal dan nilai; gunakan data yang dapat ditelusuri ke transaksi dummy.
+- Tabel transaksi terbaru: nomor pesanan, tanggal, nama pembeli, ringkasan produk, nilai pesanan milik toko, status, dan aksi untuk melihat detail.
+- Ringkasan stok: produk dengan stok rendah atau habis, jumlah stok, dan tautan ke pengelolaan produk.
+- Empty state yang informatif jika toko belum memiliki produk atau transaksi.
+
+Omzet dihitung dari item milik penjual dalam pesanan yang sudah dibayar dan tidak dibatalkan. Pesanan belum dibayar dan dibatalkan tidak masuk omzet. Kartu dan grafik harus menggunakan aturan hitung yang sama.
+
+Status stok menipis berarti stok lebih dari nol dan paling banyak 5 unit; produk dengan stok nol berstatus habis. Jumlah pesanan aktif dihitung dari transaksi penjual yang sudah dibayar dan belum selesai atau dibatalkan.
+
+##### **7.12.2 Produk Penjual**
+
+Halaman produk menampilkan inventaris toko sendiri dalam tabel responsif, dengan pencarian dan filter sederhana.
+
+Kolom minimum:
+
+- Nama dan foto produk.
+- Kategori.
+- Harga per kilogram.
+- Stok dan satuan.
+- Status publikasi (Aktif atau Disembunyikan).
+- Status stok (Tersedia, Stok Menipis, atau Habis).
+- Tanggal penangkapan atau pembaruan terakhir.
+- Aksi: detail, ubah, dan sembunyikan.
+
+Penjual dapat menambah dan mengubah produk melalui form. Field mencakup nama, kategori, harga, stok, satuan, deskripsi, status kesegaran, tanggal/waktu/lokasi tangkapan, foto utama, dan dokumentasi pendukung. Harga dan stok harus berupa angka valid; harga lebih besar dari nol dan stok tidak negatif. Produk yang disembunyikan tidak muncul di katalog pembeli dan tidak dapat dibeli. Produk yang sudah direferensikan transaksi lama tidak dihapus permanen; penjual dapat menyembunyikannya.
+
+Stok yang disunting penjual langsung menjadi stok katalog pembeli pada browser yang sama. Detail produk menampilkan pratinjau sebagaimana dilihat pembeli serta informasi lengkap produk dan dokumentasinya.
+
+##### **7.12.3 Transaksi Penjual**
+
+Halaman transaksi menampilkan pesanan yang seluruh itemnya berasal dari toko aktif. Checkout memisahkan produk dari beberapa toko menjadi transaksi berbeda, sehingga setiap penjual mengelola status pemenuhan dan nilai transaksi tokonya sendiri.
+
+Fitur:
+
+- Tabel transaksi dengan pencarian nomor pesanan dan filter status.
+- Informasi nomor pesanan, waktu, nama pembeli, item dan jumlah, nilai item penjual, serta status.
+- Halaman detail transaksi berisi ringkasan item penjual, alamat yang diperlukan untuk simulasi pengiriman, metode pembayaran, catatan pembeli jika tersedia, serta riwayat status.
+- Pesanan belum dibayar bersifat baca-saja bagi penjual.
+- Setelah pembayaran dikonfirmasi, penjual dapat memproses pesanan dan memperbarui status sesuai alur: Dikemas → Dikirim → Dalam Perjalanan → Selesai. Status selesai pada demonstrasi dapat diperbarui oleh pembeli atau data simulasi; penjual tidak boleh melompati tahapan.
+- Transaksi yang dibatalkan tidak dapat diproses kembali.
+
+##### **7.12.4 Profil Penjual**
+
+Halaman profil toko menampilkan dan mengizinkan perubahan pada nama toko, nama pemilik, deskripsi, lokasi, nomor kontak, dan foto profil toko. Email akun ditampilkan sebagai identitas akun dan tidak diubah dari form profil toko. Perubahan disimpan ke LocalStorage dan tercermin pada informasi penjual di halaman produk pembeli.
+
+##### **7.12.5 Login dan Register Penjual**
+
+- Login memakai satu halaman bersama tanpa pilihan role; role dideteksi otomatis dari akun.
+- Register penjual membuat akun berperan `seller` dan profil toko yang terhubung ke akun tersebut.
+- Setelah login, buyer diarahkan ke beranda pembeli dan seller ke dashboard penjual.
+- Pembeli yang membuka URL portal penjual diarahkan ke login atau halaman yang sesuai; akun tanpa peran penjual tidak dapat melihat atau mengubah data penjual.
+- Sediakan akun penjual demo beserta cara masuk pada README untuk pengujian lokal. Password tidak disimpan sebagai data akun.
+- Dashboard dan autentikasi role Admin belum tersedia dalam versi ini.
 
 ### **8. Struktur Data Dummy**
 
@@ -567,7 +648,9 @@ Setiap produk minimal memiliki:
   ],
   rating: 4.8,
   sold: 45,
-  isAvailable: true
+  isAvailable: true,
+  isPublished: true,
+  updatedAt: "2026-11-24T10:00:00"
 }
 ```
 
@@ -576,37 +659,50 @@ Setiap produk minimal memiliki:
 ```
 {
   id: 1,
+  ownerUserId: 3,
   shopName: "Nelayan Bahari",
   ownerName: "Budi Santoso",
   location: "Pangandaran",
+  phone: "081234567890",
+  profileImage: "assets/images/sellers/nelayan-bahari.jpg",
   rating: 4.8,
   totalProducts: 8,
-  description: "Menyediakan hasil tangkapan laut langsung dari nelayan."
+  description: "Menyediakan hasil tangkapan laut langsung dari nelayan.",
+  joinedAt: "2026-11-01"
 }
 ```
 
+`ownerUserId` menghubungkan satu profil toko dengan akun penjual. Produk memiliki `sellerId` sebagai pemilik. Nilai `totalProducts` diturunkan dari produk yang aktif agar tidak berbeda dari inventaris.
+
 #### **8.3 Data Pengguna**
+
+Setiap pengguna memiliki field `role` dengan nilai `buyer` atau `seller`. Akun penjual harus memiliki relasi ke profil toko melalui `sellerId`. Jangan menyimpan password asli pada data dummy atau LocalStorage.
 
 ```
 {
-  id: 1,
-  name: "Andi",
-  email: "andi@example.com",
+  id: 3,
+  name: "Budi Santoso",
+  email: "nelayan@example.com",
   phone: "081234567890",
-  address: "Pangandaran, Jawa Barat",
-  profileImage: "assets/images/profile.jpg"
+  role: "seller",
+  sellerId: 1,
+  profileImage: "assets/images/profile/nelayan.jpg"
 }
 ```
 
 #### **8.4 Data Pesanan**
 
+Setiap pesanan memiliki satu `sellerId`; setiap item juga menyimpan `sellerId` dan salinan nama, harga, serta jumlah saat checkout. Ini menjaga detail dan laporan transaksi tetap benar walaupun harga atau data produk berubah kemudian. Checkout memecah keranjang multi-toko menjadi pesanan terpisah per penjual. Nilai transaksi penjual dihitung dari subtotal item sebelum biaya pengiriman.
+
 ```
 {
   id: "ORD-001",
   userId: 1,
+  sellerId: 1,
   products: [
     {
       productId: 1,
+      sellerId: 1,
       name: "Ikan Tuna",
       price: 45000,
       quantity: 2,
@@ -618,11 +714,13 @@ Setiap produk minimal memiliki:
   subtotal: 90000,
   shippingCost: 10000,
   total: 100000,
-  status: "Belum Dibayar",
+  status: "Dikemas",
   createdAt: "2026-11-24T10:00:00",
   history: []
 }
 ```
+
+Data awal sebaiknya memuat beberapa pesanan untuk setiap toko demo dengan status yang bervariasi, termasuk pesanan belum dibayar, sedang diproses, selesai, dan dibatalkan. Setidaknya satu toko memiliki produk stok menipis dan produk habis agar dashboard dapat diuji.
 
 #### **8.5 Data Ulasan**
 
@@ -669,6 +767,11 @@ Fitur JavaScript yang wajib dibuat:
 23. Melakukan simulasi login dan register.
 24. Memberikan notifikasi ketika pengguna melakukan tindakan.
 25. Menyimpan data menggunakan LocalStorage.
+26. Memeriksa peran dan mengarahkan pengguna ke area yang sesuai.
+27. Membatasi produk, transaksi, statistik, dan perubahan profil ke penjual yang sedang masuk.
+28. Menambah, mengubah, dan menyembunyikan produk penjual; perubahan stok dan publikasi tercermin pada katalog pembeli.
+29. Menghitung omzet dan ringkasan penjualan dari item pesanan milik penjual, dengan mengecualikan pesanan belum dibayar dan dibatalkan.
+30. Memfilter transaksi penjual serta mencatat perubahan status dan waktu pada riwayat transaksi.
 
 **Ketentuan JavaScript:**
 
@@ -700,6 +803,13 @@ marketplace-hasil-laut/
 ├── profile.html
 ├── login.html
 ├── register.html
+├── seller-dashboard.html
+├── seller-products.html
+├── seller-product-detail.html
+├── seller-product-form.html
+├── seller-orders.html
+├── seller-order-detail.html
+├── seller-profile.html
 │
 ├── assets/
 │   ├── css/
@@ -719,7 +829,14 @@ marketplace-hasil-laut/
 │   │   ├── checkout.js
 │   │   ├── orders.js
 │   │   ├── wishlist.js
-│   │   └── profile.js
+│   │   ├── profile.js
+│   │   ├── seller-dashboard.js
+│   │   ├── seller-products.js
+│   │   ├── seller-product-detail.js
+│   │   ├── seller-product-form.js
+│   │   ├── seller-orders.js
+│   │   ├── seller-order-detail.js
+│   │   └── seller-profile.js
 │   │
 │   └── images/
 │       ├── banner/
@@ -754,7 +871,7 @@ Website harus memiliki desain yang konsisten di semua halaman.
 
 **C. Tombol**
 
-- Tombol utama menggunakan warna Deep Teal.
+- Tombol utama menggunakan warna teal-700 yang telah dipakai pada halaman pembeli.
 - Tombol sekunder menggunakan warna netral.
 - Tombol harus memiliki hover state.
 - Tombol harus benar-benar menjalankan fungsinya.
@@ -787,6 +904,16 @@ Hindari animasi yang berlebihan karena dapat mengganggu kenyamanan pengguna.
 - Gunakan pola card produk yang sama.
 - Pastikan semua halaman memiliki identitas visual yang seragam.
 
+**G. Konsistensi Portal Penjual**
+
+- Gunakan token desain marketplace yang sudah ada: latar slate muda/putih, teks slate, teal untuk aksi utama, dan warna status yang sudah digunakan. Jangan membuat palet atau gaya komponen baru yang bersaing dengan halaman pembeli.
+- Gunakan Inter untuk isi dan Plus Jakarta Sans untuk heading seperti halaman yang ada. Navbar, tombol, field form, tabel, badge status, radius, dan jarak mengikuti pola komponen yang sudah ada.
+- Dashboard berfokus pada keterbacaan data dan tindakan operasional. Hindari panel berlebihan, gradient dekoratif, efek glassmorphism, ornamen laut literal, emoji, serta ikon berulang hanya untuk mengisi ruang.
+- Gunakan Lucide Icons yang sudah dipakai proyek hanya jika ikon membantu mengenali aksi; ikon harus konsisten ukuran dan stroke-nya. Utamakan label teks yang jelas dan jangan memakai ikon dekoratif atau emoji sebagai pengganti navigasi.
+- Tabel berubah menjadi kartu/daftar yang mudah dipindai di layar kecil. Form, tabel, navigasi, dan grafik harus tetap dapat digunakan dengan keyboard dan memiliki label yang dapat dibaca.
+- Grafik penjualan sederhana, memiliki judul, rentang tanggal, label/sumbu yang terbaca, dan fallback teks/ringkasan angka. Jangan menambah dependensi chart untuk data dummy ini.
+- Gunakan foto hasil laut dan foto penjual yang relevan serta rasio yang konsisten; hindari gambar generik yang tidak berhubungan dengan konten.
+
 ### **12. Penyimpanan Data (LocalStorage)**
 
 LocalStorage digunakan sebagai pengganti database sementara.
@@ -814,6 +941,9 @@ Ketentuan:
 6. Produk yang stoknya habis tidak dapat dibeli.
 7. Jangan menyimpan password asli atau informasi sensitif di LocalStorage.
 8. Sediakan mekanisme reset data dummy untuk keperluan pengujian.
+9. Data produk tetap berada pada key `products` yang sama untuk halaman pembeli dan penjual.
+10. Data statistik penjual dihitung dari transaksi dan stok yang tersimpan, bukan angka statis yang berbeda dari tabel.
+11. Semua data penjual dan transaksi yang tampil harus dibatasi oleh identitas penjual aktif.
 
 Catatan: LocalStorage hanya berlaku pada browser dan perangkat yang digunakan. Data tidak tersinkronisasi dengan pengguna lain.
 
@@ -859,6 +989,15 @@ Untuk menghindari kesalahan proses, website harus memiliki aturan berikut:
 - Pengguna harus memiliki akun simulasi.
 - Pengguna yang belum login diarahkan ke halaman login ketika mengakses fitur yang membutuhkan akun.
 - Logout menghapus sesi pengguna aktif.
+
+**G. Akses dan Data Penjual**
+
+- Hanya akun `seller` dengan profil toko terkait yang dapat membuka halaman portal penjual.
+- Setiap pembacaan dan perubahan produk, transaksi, dan profil memeriksa `sellerId` terhadap akun aktif.
+- Data produk dari pesanan lama tetap menampilkan snapshot transaksi dan tidak berubah ketika produk diedit.
+- Penjual tidak dapat memproses pesanan yang belum dibayar atau pesanan yang dibatalkan.
+- Stok produk tidak boleh negatif; perubahan stok harus langsung tercermin pada ketersediaan produk pembeli.
+- Karena aplikasi hanya menggunakan LocalStorage, pemeriksaan peran adalah simulasi UI, bukan mekanisme keamanan untuk produksi.
 
 ### **14. Kebutuhan Non-Fungsional**
 
@@ -923,7 +1062,15 @@ Pengembangan dilakukan secara bertahap agar pengerjaan lebih terarah.
 - Membuat tracking pesanan.
 - Membuat simulasi perubahan status pesanan.
 
-**Tahap 6 – Integrasi JavaScript**
+**Tahap 6 – Portal Penjual**
+
+- Menambahkan deteksi role otomatis pada login dan jalur register penjual terpisah dari registrasi buyer.
+- Membuat dashboard penjual dengan statistik, tren penjualan, transaksi terbaru, dan peringatan stok.
+- Membuat daftar, detail, tambah, ubah, dan sembunyikan produk penjual.
+- Membuat daftar/detail transaksi penjual dengan filter dan alur status.
+- Membuat profil toko dan menyinkronkan perubahan ke halaman pembeli.
+
+**Tahap 7 – Integrasi JavaScript**
 
 - Menghubungkan data dummy dengan halaman.
 - Menghubungkan LocalStorage.
@@ -931,7 +1078,7 @@ Pengembangan dilakukan secara bertahap agar pengerjaan lebih terarah.
 - Membuat validasi.
 - Memastikan perhitungan berjalan benar.
 
-**Tahap 7 – Pengujian**
+**Tahap 8 – Pengujian**
 
 - Menguji seluruh halaman.
 - Menguji pencarian.
@@ -941,9 +1088,13 @@ Pengembangan dilakukan secara bertahap agar pengerjaan lebih terarah.
 - Menguji perubahan stok.
 - Menguji wishlist.
 - Menguji status pesanan.
+- Menguji akun pembeli tidak dapat mengakses portal penjual.
+- Menguji data dashboard hanya menghitung pesanan dan produk toko aktif.
+- Menguji perubahan stok, harga, dan status publikasi tersinkron ke katalog pembeli.
+- Menguji alur transaksi penjual, termasuk pembatasan pesanan belum dibayar dan dibatalkan.
 - Menguji tampilan responsif.
 
-**Tahap 8 – Finalisasi**
+**Tahap 9 – Finalisasi**
 
 - Memperbaiki bug.
 - Merapikan kode.
@@ -977,6 +1128,13 @@ Website dianggap selesai apabila memenuhi kriteria berikut:
 | 18  | Login         | Dapat menjalankan simulasi login      |
 | 19  | Register      | Dapat menjalankan simulasi register   |
 | 20  | Responsive    | Berjalan di desktop dan mobile        |
+| 21  | Role Penjual  | Register/login penjual menuju portal penjual; pembeli tidak dapat mengaksesnya |
+| 22  | Dashboard Penjual | Statistik, grafik, transaksi terbaru, dan ringkasan stok konsisten dengan data |
+| 23  | Inventaris Penjual | Tambah/ubah/sembunyikan produk dan perubahan stok tervalidasi serta tersinkron |
+| 24  | Detail Produk Penjual | Menampilkan seluruh informasi dan pratinjau produk milik toko aktif |
+| 25  | Transaksi Penjual | Hanya menampilkan item milik penjual aktif dan filter status berfungsi |
+| 26  | Status Pesanan | Penjual hanya dapat memproses pesanan yang sudah dibayar sesuai urutan status |
+| 27  | Profil Penjual | Perubahan profil toko tersimpan dan tampil pada katalog pembeli |
 
 ### **17. Batasan Sistem**
 
@@ -994,6 +1152,8 @@ Versi pertama website memiliki batasan sebagai berikut:
 10. Data LocalStorage tidak tersinkronisasi antarperangkat.
 11. Dokumentasi hasil tangkapan merupakan foto pendukung dari penjual dan belum diverifikasi secara otomatis.
 12. Login dan register hanya untuk simulasi frontend.
+13. Dashboard, statistik, stok, dan transaksi penjual menggunakan data LocalStorage lokal; bukan data operasional aktual.
+14. Upload gambar penjual hanya berupa URL atau file lokal terbatas untuk prototipe; belum ada layanan penyimpanan file.
 
 ### **18. Pengembangan Berikutnya**
 
@@ -1001,10 +1161,9 @@ Apabila website dikembangkan menjadi aplikasi yang lebih lengkap, fitur berikut 
 
 - Backend menggunakan Laravel.
 - Database MySQL.
-- Dashboard penjual.
 - Dashboard administrator.
-- Pengelolaan produk oleh nelayan.
-- Upload foto hasil tangkapan.
+- Backend dan database untuk autentikasi/otorisasi yang aman serta sinkronisasi multi-perangkat.
+- Penyimpanan gambar terpusat dan upload foto hasil tangkapan.
 - Verifikasi dokumentasi hasil tangkapan.
 - Payment gateway.
 - Integrasi jasa pengiriman.
@@ -1013,12 +1172,13 @@ Apabila website dikembangkan menjadi aplikasi yang lebih lengkap, fitur berikut 
 - Chat antara pembeli dan penjual.
 - Laporan penjualan.
 - Sistem rating dan ulasan yang tersimpan di database.
+- Rekonsiliasi pembayaran, pencairan dana, dan laporan akuntansi.
 
 ### **19. Gambaran Akhir Produk**
 
 AkuAnakNelayan merupakan website marketplace yang menghubungkan nelayan dengan konsumen melalui sistem penjualan online.
 
-Fokus utama website bukan hanya menyediakan tempat untuk membeli hasil laut, tetapi juga memberikan informasi yang transparan mengenai produk, stok, kesegaran, waktu penangkapan, serta dokumentasi hasil tangkapan.
+Fokus utama website bukan hanya menyediakan tempat untuk membeli hasil laut, tetapi juga menyediakan alat kerja sederhana bagi nelayan untuk mengelola produk, stok, dan pesanan. Pembeli tetap memperoleh informasi yang transparan mengenai produk, kesegaran, waktu penangkapan, serta dokumentasi hasil tangkapan. Pada versi frontend, portal penjual beroperasi menggunakan data dummy yang tersimpan di LocalStorage.
 
 Dengan adanya informasi tersebut, pembeli diharapkan dapat lebih mudah menentukan produk yang ingin dibeli, sedangkan nelayan memiliki media tambahan untuk memasarkan hasil tangkapannya kepada konsumen yang lebih luas.
 
@@ -1048,7 +1208,9 @@ Ketentuan pengerjaan:
 16. Pastikan tampilan responsif di desktop, tablet, dan smartphone.
 17. Hindari desain yang terlalu ramai, penggunaan gradient berlebihan, glassmorphism, dan dekorasi yang tidak diperlukan.
 18. Gunakan kode yang rapi, mudah dipahami, dan mudah dikembangkan.
-19. Jangan mengubah teknologi yang sudah ditentukan dalam PRD.
-20. Kerjakan proyek secara bertahap dan pastikan setiap tahap dapat dijalankan sebelum melanjutkan ke tahap berikutnya.
+19. Buat pengalaman pembeli dan penjual konsisten dengan sistem desain yang telah ada; gunakan ikon Lucide secara seperlunya, tanpa emoji atau ikon dekoratif berlebihan.
+20. Pastikan akses seller dibatasi pada data toko yang terkait dan data di dashboard dihitung dari sumber transaksi/produk yang sama.
+21. Jangan mengubah teknologi yang sudah ditentukan dalam PRD.
+22. Kerjakan proyek secara bertahap dan pastikan setiap tahap dapat dijalankan sebelum melanjutkan ke tahap berikutnya.
 
 **Prioritas utama:** Buat website yang memiliki tampilan profesional, mudah digunakan, dan seluruh fitur frontend-nya berjalan dengan baik. Jangan hanya fokus pada tampilan visual, tetapi pastikan logika JavaScript dan hubungan antarhalaman juga berfungsi.

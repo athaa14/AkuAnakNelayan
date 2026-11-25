@@ -11,7 +11,7 @@ if (!product) {
     const soldOut = product.stock <= 0;
     const isWishlisted = wishlistIds().includes(product.id);
     const reviews = Store.get("reviews", DATA.reviews).filter(review => review.productId === product.id);
-    const gallery = [product.image, ...product.proofImages];
+    const gallery = [product.image, ...(product.proofImages || [])];
     const mainImage = document.querySelector("#mainDetailImage");
     const quantity = document.querySelector("#buyQty");
     const buyButton = document.querySelector("#buyNow");
@@ -40,11 +40,11 @@ if (!product) {
         ["Tanggal tangkap", formatDate(product.catchDate)],
         ["Waktu tangkap", `${product.catchTime} WIB`]
     ].map(([label, value]) => `
-        <div class="rounded-xl bg-amber-50 p-3"><span class="block text-xs text-slate-500">${label}</span><strong class="mt-1 block text-sm text-slate-900">${value}</strong></div>
+        <div class="rounded-xl bg-amber-50 p-3"><span class="block text-xs text-slate-500">${escapeHTML(label)}</span><strong class="mt-1 block text-sm text-slate-900">${escapeHTML(value)}</strong></div>
     `).join("");
     document.querySelector("#detailThumbs").innerHTML = gallery.map((image, index) => `
-        <button class="overflow-hidden rounded-xl border-2 ${index === 0 ? "border-teal-700" : "border-transparent"} ${soldOut ? "grayscale opacity-60" : ""}" data-image="${image}" aria-label="Lihat gambar ${index + 1}">
-            <img class="h-20 w-full object-cover" src="${image}" alt="${product.name} dokumentasi ${index + 1}">
+        <button class="overflow-hidden rounded-xl border-2 ${index === 0 ? "border-teal-700" : "border-transparent"} ${soldOut ? "grayscale opacity-60" : ""}" data-image="${escapeHTML(image)}" aria-label="Lihat gambar ${index + 1}">
+            <img class="h-20 w-full object-cover" src="${escapeHTML(image)}" alt="${escapeHTML(product.name)} dokumentasi ${index + 1}">
         </button>
     `).join("");
     document.querySelectorAll("#detailThumbs button").forEach(button => {
@@ -66,11 +66,11 @@ if (!product) {
     wishlistButton.classList.toggle("text-rose-600", isWishlisted);
     wishlistButton.querySelector("span").textContent = isWishlisted ? "Hapus dari Favorit" : "Tambahkan ke Favorit";
 
-    document.querySelector("#proofGrid").innerHTML = product.proofImages.map((image, index) => `
-        <figure><img class="h-40 w-full rounded-xl object-cover" src="${image}" alt="Dokumentasi hasil tangkapan ${index + 1}"><figcaption class="mt-2 text-xs text-slate-500">${["Hasil tangkapan nelayan", "Bukti proses penimbangan", "Penyimpanan menggunakan es"][index]}</figcaption></figure>
+    document.querySelector("#proofGrid").innerHTML = (product.proofImages || []).map((image, index) => `
+        <figure><img class="h-40 w-full rounded-xl object-cover" src="${escapeHTML(image)}" alt="Dokumentasi hasil tangkapan ${index + 1}"><figcaption class="mt-2 text-xs text-slate-500">${["Hasil tangkapan nelayan", "Bukti proses penimbangan", "Penyimpanan menggunakan es"][index]}</figcaption></figure>
     `).join("");
     document.querySelector("#reviewsList").innerHTML = reviews.length ? reviews.map(review => `
-        <article class="py-4 first:pt-0"><div class="flex items-center justify-between gap-3"><strong class="text-sm text-slate-900">${review.userName}</strong><span class="flex items-center gap-1 text-xs font-bold text-amber-600">${icon("star", 13)} ${review.rating}</span></div><p class="mt-2 text-sm leading-6 text-slate-600">${review.comment}</p><time class="mt-1 block text-xs text-slate-400">${formatDate(review.date)}</time></article>
+        <article class="py-4 first:pt-0"><div class="flex items-center justify-between gap-3"><strong class="text-sm text-slate-900">${escapeHTML(review.userName)}</strong><span class="flex items-center gap-1 text-xs font-bold text-amber-600">${icon("star", 13)} ${review.rating}</span></div><p class="mt-2 text-sm leading-6 text-slate-600">${escapeHTML(review.comment)}</p><time class="mt-1 block text-xs text-slate-400">${formatDate(review.date)}</time></article>
     `).join("") : `<p class="py-4 text-sm text-slate-500">Belum ada ulasan untuk produk ini.</p>`;
     document.querySelector("#sellerImage").src = seller.image;
     document.querySelector("#sellerImage").alt = seller.shopName;
@@ -95,7 +95,7 @@ if (!product) {
     buyButton.addEventListener("click", () => {
         const amount = Number(quantity.value);
         if (amount < 1 || amount > product.stock) return toast("Jumlah tidak sesuai stok", "alert-circle");
-        if (!Auth.requireLogin()) return;
+        if (!Auth.requireBuyer()) return;
         Store.set("cart", [...cartItems().filter(item => item.productId !== product.id), { productId: product.id, quantity: amount }]);
         updateNavBadges();
         location.href = "checkout.html";
